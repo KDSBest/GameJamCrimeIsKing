@@ -1,21 +1,17 @@
 using UnityEngine;
 
-public class Tile
+namespace Assets.Scripts
 {
-    public enum TileType
+    public class Tile
     {
-        Walkable,
-        Wall,
-        Door
-    }
+        public TileType Type;
 
-    public TileType Type;
+        public GameObject OccupyingObject;
 
-    public GameObject OccupyingObject;
-
-    public Tile(TileType type, GameObject occupyingObject)
-    {
-        this.Type = type;
-        this.OccupyingObject = occupyingObject;
+        public Tile(TileType type, GameObject occupyingObject)
+        {
+            this.Type = type;
+            this.OccupyingObject = occupyingObject;
+        }
     }
 }

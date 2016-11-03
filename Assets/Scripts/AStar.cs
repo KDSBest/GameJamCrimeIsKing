@@ -7,7 +7,7 @@ namespace Assets.Scripts
 {
     public static class AStar
     {
-        public static AStarLocation Search(Point startPosition, Point endPosition, bool[,] walls, Point mapSize)
+        public static AStarLocation Search(Point startPosition, Point endPosition, Grid map)
         {
 
             var openList = new List<AStarLocation>();
@@ -42,7 +42,7 @@ namespace Assets.Scripts
                 if (current.Position.X == target.Position.X && current.Position.Y == target.Position.Y)
                     return current;
 
-                var adjacentSquares = GetWalkableAdjacentSquares(current.Position, walls, mapSize);
+                var adjacentSquares = GetWalkableAdjacentSquares(current.Position, map);
                 g++;
 
                 foreach (var adjacentSquare in adjacentSquares)
@@ -82,7 +82,7 @@ namespace Assets.Scripts
             return null;
         }
 
-        public static List<AStarLocation> GetWalkableAdjacentSquares(Point position, bool[,] walls, Point mapSize)
+        public static List<AStarLocation> GetWalkableAdjacentSquares(Point position, Grid map)
         {
             var proposedLocations = new List<AStarLocation>()
             {
@@ -92,7 +92,7 @@ namespace Assets.Scripts
                 new AStarLocation { Position = new Point(position.X + 1, position.Y) },
             };
 
-            return proposedLocations.Where(l => l.Position.X >= 0 && l.Position.Y >= 0 && l.Position.X < mapSize.X && l.Position.Y < mapSize.Y && !walls[l.Position.X, l.Position.Y]).ToList();
+            return proposedLocations.Where(l => l.Position.X >= 0 && l.Position.Y >= 0 && l.Position.X < map.Size.X && l.Position.Y < map.Size.Y && map.Tiles[l.Position.X, l.Position.Y].Type == TileType.Walkable).ToList();
         }
 
         public static int ComputeHScore(int x, int y, int targetX, int targetY)
