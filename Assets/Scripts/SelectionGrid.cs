@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace Assets.Scripts
@@ -22,7 +22,7 @@ namespace Assets.Scripts
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    var result = AStar.Search(this.currentPosition, new Point((int)this.SelectionOverlay.transform.position.x, (int)this.SelectionOverlay.transform.position.z), Bootstrap.Instance.Map.Walls, Bootstrap.Instance.Map.Size);
+                    var result = AStar.Search(this.currentPosition, new Point((int)this.SelectionOverlay.transform.position.x, (int)this.SelectionOverlay.transform.position.z), Bootstrap.Instance.Map.Tiles, Bootstrap.Instance.Map.Size);
 
                     if (result != null)
                     {

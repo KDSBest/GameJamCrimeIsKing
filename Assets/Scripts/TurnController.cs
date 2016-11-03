@@ -33,6 +33,9 @@ public class TurnController : MonoBehaviour
 
         this.StartTurnButton.onClick.RemoveAllListeners();
         this.StartTurnButton.onClick.AddListener(this.StartTurn);
+
+        this.BlackOverlay.SetActive(true);
+
     }
 
     public void StartTurn()
