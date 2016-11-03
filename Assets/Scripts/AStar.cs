@@ -9,6 +9,7 @@ namespace Assets.Scripts
     {
         public static AStarLocation Search(Point startPosition, Point endPosition, bool[,] walls, Point mapSize)
         {
+
             var openList = new List<AStarLocation>();
             var closedList = new List<AStarLocation>();
             AStarLocation current = null;
@@ -30,8 +31,7 @@ namespace Assets.Scripts
             while (openList.Count > 0)
             {
                 // get the square with the lowest F score
-                var lowest = openList.Min(l => l.F);
-                current = openList.First(l => l.F == lowest);
+                current = openList.Aggregate((curMin, x) => (curMin == null || x.F < curMin.F ? x : curMin));
 
                 // add the current square to the closed list
                 closedList.Add(current);
@@ -39,9 +39,8 @@ namespace Assets.Scripts
                 // remove it from the open list
                 openList.Remove(current);
 
-                // if we added the destination to the closed list, we've found a path
-                if (closedList.FirstOrDefault(l => l.Position.X == target.Position.X && l.Position.Y == target.Position.Y) != null)
-                    break;
+                if (current.Position.X == target.Position.X && current.Position.Y == target.Position.Y)
+                    return current;
 
                 var adjacentSquares = GetWalkableAdjacentSquares(current.Position, walls, mapSize);
                 g++;
@@ -80,15 +79,10 @@ namespace Assets.Scripts
                 }
             }
 
-            if (current.Position.X == target.Position.X && current.Position.Y == target.Position.Y)
-                return current;
-
             return null;
         }
 
-
-
-        static List<AStarLocation> GetWalkableAdjacentSquares(Point position, bool[,] walls, Point mapSize)
+        public static List<AStarLocation> GetWalkableAdjacentSquares(Point position, bool[,] walls, Point mapSize)
         {
             var proposedLocations = new List<AStarLocation>()
             {
@@ -101,7 +95,7 @@ namespace Assets.Scripts
             return proposedLocations.Where(l => l.Position.X >= 0 && l.Position.Y >= 0 && l.Position.X < mapSize.X && l.Position.Y < mapSize.Y && !walls[l.Position.X, l.Position.Y]).ToList();
         }
 
-        static int ComputeHScore(int x, int y, int targetX, int targetY)
+        public static int ComputeHScore(int x, int y, int targetX, int targetY)
         {
             return Math.Abs(targetX - x) + Math.Abs(targetY - y);
         }
