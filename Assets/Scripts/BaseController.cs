@@ -1,7 +1,11 @@
+using Assets.Scripts;
+
 using UnityEngine;
 
 public class BaseController : MonoBehaviour, IController
 {
+    public Point CurrentPosition;
+
     public void StartTurn()
     {
         Debug.Log("start turn: " + this.GetType().Name);

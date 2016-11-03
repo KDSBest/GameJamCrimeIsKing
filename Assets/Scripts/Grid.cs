@@ -1,25 +1,22 @@
-﻿namespace Assets.Scripts
+using UnityEngine;
+
+namespace Assets.Scripts
 {
     public class Grid
     {
-        public bool[,] Walls;
+        public Tile[,] Tiles;
 
         public Point Size;
 
         public Grid(Point size)
         {
             this.Size = size;
-            this.Walls = new bool[this.Size.X, this.Size.Y];
+            this.Tiles = new Tile[this.Size.X, this.Size.Y];
         }
 
-        public void SetWall(int x, int y)
+        public void SetTile(Tile.TileType type, int x, int y, GameObject occupyingObject)
         {
-            this.Walls[x, y] = true;
-        }
-
-        public void SetWalkable(int x, int y)
-        {
-            this.Walls[x, y] = false;
+            this.Tiles[x, y] = new Tile(type, occupyingObject);
         }
     }
 }
