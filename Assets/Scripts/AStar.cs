@@ -1,4 +1,6 @@
-﻿public static class AStar
+﻿namespace Assets.Scripts
 {
-    
+    public class AStar
+    {
+    }
 }

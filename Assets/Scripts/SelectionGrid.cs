@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SelectionGrid : MonoBehaviour
+namespace Assets.Scripts
 {
-    public GameObject SelectionOverlay;
-
-    public void OnMouseOver()
+    public class SelectionGrid : MonoBehaviour
     {
-        var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        public GameObject SelectionOverlay;
 
-        if(Physics.Raycast(mouseRay, out hit))
+        public void OnMouseOver()
         {
-            this.SelectionOverlay.transform.position = new Vector3(Mathf.Round(hit.point.x), this.SelectionOverlay.transform.position.y, Mathf.Round(hit.point.z));
+            var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(mouseRay, out hit))
+            {
+                this.SelectionOverlay.transform.position = new Vector3(Mathf.Round(hit.point.x), this.SelectionOverlay.transform.position.y, Mathf.Round(hit.point.z));
+            }
         }
     }
 }
