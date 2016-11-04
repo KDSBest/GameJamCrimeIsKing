@@ -6,6 +6,10 @@ namespace Assets.Scripts
 {
     public class SelectionGrid : MonoBehaviour
     {
+        public List<GameObject> WaypointsAllowed = new List<GameObject>();
+
+        public List<GameObject> Waypoints = new List<GameObject>();
+
         public Point CurrentPosition = new Point(0, 0);
 
         public Point SelectedPoint = null;
@@ -18,16 +22,19 @@ namespace Assets.Scripts
 
         public GameObject WaypointAllowed;
 
-        public GameObject Figure;
+        [HideInInspector]
+        public int[,] AllowedMoves = null;
 
-        public bool[,] AllowedMoves = null;
-
+        [HideInInspector]
         public Point AllowedMovesOffest = null;
 
+        [HideInInspector]
         public Point AllowedMovesSize = null;
 
-        public void CalculatePossibleTurns(int actionPoints)
+        public void CalculatePossibleTurns(BaseController baseController)
         {
+            this.CurrentPosition = baseController.CurrentPosition;
+            int actionPoints = baseController.CurrentActionPoints;
             AllowedMovesOffest = new Point(int.MaxValue, int.MaxValue);
             Point high = new Point(int.MinValue, int.MinValue);
 
@@ -68,7 +75,7 @@ namespace Assets.Scripts
 
             AllowedMovesSize = new Point(high.X - AllowedMovesOffest.X + 1, high.Y - AllowedMovesOffest.Y + 1);
             Tile[,] tiles = new Tile[AllowedMovesSize.X, AllowedMovesSize.Y];
-            this.AllowedMoves = new bool[AllowedMovesSize.X, AllowedMovesSize.Y];
+            this.AllowedMoves = new int[AllowedMovesSize.X, AllowedMovesSize.Y];
             for (int y = 0; y < AllowedMovesSize.Y; y++)
             {
                 for (int x = 0; x < AllowedMovesSize.X; x++)
@@ -77,6 +84,7 @@ namespace Assets.Scripts
                 }
             }
 
+            this.DeleteAllWaypointsAllowed();
             Grid g = new Grid(AllowedMovesSize, tiles);
             for (int y = 0; y < AllowedMovesSize.Y; y++)
             {
@@ -87,7 +95,7 @@ namespace Assets.Scripts
                     Point endPosition = new Point(x, y);
                     Point startPosition = new Point(this.CurrentPosition.X - AllowedMovesOffest.X, this.CurrentPosition.Y - AllowedMovesOffest.Y);
 
-                    this.AllowedMoves[x, y] = false;
+                    this.AllowedMoves[x, y] = -1;
 
                     var astarResult = AStar.Search(startPosition, endPosition, g);
 
@@ -104,18 +112,19 @@ namespace Assets.Scripts
                         if (walkLength <= actionPoints)
                         {
                             CreateWaypointAllowed(this.WaypointAllowed, endPositionInMap);
-                            this.AllowedMoves[x, y] = true;
+                            this.AllowedMoves[x, y] = walkLength;
                         }
                     }
                 }
             }
         }
 
-        public void Update()
+        public void Select(BaseController baseController)
         {
+            this.CurrentPosition = baseController.CurrentPosition;
             if (this.AllowedMoves == null)
             {
-                this.CalculatePossibleTurns(5);
+                this.CalculatePossibleTurns(baseController);
             }
 
             var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -130,7 +139,7 @@ namespace Assets.Scripts
                     var target = new Point((int)this.SelectionOverlay.transform.position.x, (int)this.SelectionOverlay.transform.position.z);
                     var offsetClick = target - this.AllowedMovesOffest;
 
-                    if (offsetClick.X < 0 || offsetClick.Y < 0 || offsetClick.X >= this.AllowedMovesSize.X || offsetClick.Y >= this.AllowedMovesSize.Y || !this.AllowedMoves[offsetClick.X, offsetClick.Y])
+                    if (offsetClick.X < 0 || offsetClick.Y < 0 || offsetClick.X >= this.AllowedMovesSize.X || offsetClick.Y >= this.AllowedMovesSize.Y || this.AllowedMoves[offsetClick.X, offsetClick.Y] < 0)
                         return;
 
                     if (this.SelectedPoint == null || this.SelectedPoint.X != target.X || this.SelectedPoint.Y != target.Y)
@@ -157,16 +166,13 @@ namespace Assets.Scripts
                     {
                         this.DeleteAllWaypoints();
                         this.DeleteAllWaypointsAllowed();
-                        this.AllowedMoves = null;
                         this.CurrentPosition = this.SelectedPoint;
-                        this.Figure.transform.position = new Vector3(this.CurrentPosition.X, 0.5f, this.CurrentPosition.Y);
+                        baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y]);
+                        this.AllowedMoves = null;
                     }
                 }
             }
         }
-
-        public List<GameObject> WaypointsAllowed = new List<GameObject>();
-        public List<GameObject> Waypoints = new List<GameObject>();
 
         private void CreateWaypointAllowed(GameObject toClone, Point point)
         {

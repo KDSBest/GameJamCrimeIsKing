@@ -11,11 +11,13 @@ public class BaseController : MonoBehaviour, IController
 
     public int ActionPointsMax = 20;
 
-    public Point CurrentPosition;
+    public Point CurrentPosition = new Point(0, 0);
 
     public bool HasTurnToken;
 
     public Text ActionPointCounter;
+
+    public SelectionGrid SelectionGrid;
 
     public void Start()
     {
@@ -30,6 +32,8 @@ public class BaseController : MonoBehaviour, IController
         this.HasTurnToken = true;
 
         this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
+
+        this.SelectionGrid.CalculatePossibleTurns(this);
     }
 
     public void GainActionPoints()
@@ -57,5 +61,12 @@ public class BaseController : MonoBehaviour, IController
     {
         Debug.Log("end turn: " + this.GetType().Name);
         this.HasTurnToken = false;
+    }
+
+    public virtual void MoveTo(Point currentPosition, int actionPointCost)
+    {
+        this.CurrentPosition = currentPosition;
+        this.CurrentActionPoints -= actionPointCost;
+        this.SelectionGrid.CalculatePossibleTurns(this);
     }
 }

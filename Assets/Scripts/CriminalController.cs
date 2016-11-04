@@ -10,11 +10,10 @@ public class CriminalController : BaseController
 
     public ActorSkill[] Skills = new ActorSkill[4];
 
-    private SelectionGrid selection;
-
-    public void Start()
+    public override void MoveTo(Point currentPosition, int actionPointCost)
     {
-        this.selection = FindObjectOfType<SelectionGrid>();
+        base.MoveTo(currentPosition, actionPointCost);
+        this.Criminal.transform.position = new Vector3(this.CurrentPosition.X, this.Criminal.transform.position.y, this.CurrentPosition.Y);
     }
 
     public void Update()
@@ -24,10 +23,7 @@ public class CriminalController : BaseController
             return;
         }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            this.selection.Select();
-        }
+        this.SelectionGrid.Select(this);
 
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
