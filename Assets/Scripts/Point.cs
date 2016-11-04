@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 namespace Assets.Scripts
 {
     public class Point
@@ -46,6 +48,11 @@ namespace Assets.Scripts
         public static Point operator /(Point a, int d)
         {
             return new Point(a.X / d, a.Y / d);
+        }
+
+        public static implicit operator Vector2(Point p)
+        {
+            return new Vector2(p.X, p.Y);
         }
     }
 }

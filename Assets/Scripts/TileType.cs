@@ -4,5 +4,7 @@ public enum TileType
     Wall,
     Door,
     BedHead,
-    BedFoot
+    BedFoot,
+
+    DoorFrame
 }

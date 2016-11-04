@@ -17,6 +17,8 @@ namespace Assets.Scripts
         private const char WallChar = '#';
         private const char BedHeadChar = 'B';
         private const char BedFootChar = 'b';
+        private const char DoorChar = 'D';
+        private const char DoorFrameChar = 'd';
 
         public Grid(string mapFileContent)
         {
@@ -50,6 +52,12 @@ namespace Assets.Scripts
                         case BedFootChar:
                             this.Tiles[x, y].Type = TileType.BedFoot;
                             break;
+                        case DoorFrameChar:
+                            this.Tiles[x, y].Type = TileType.DoorFrame;
+                            break;
+                        case DoorChar:
+                            this.Tiles[x, y].Type = TileType.Door;
+                            break;
                     }
                 }
             }
@@ -79,7 +87,7 @@ namespace Assets.Scripts
             this.Tiles[x, y] = new Tile(type, occupyingObject);
         }
 
-        public void GeneratedMapVisibles(GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed)
+        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door)
         {
             for (int x = 0; x < this.Size.X; x++)
             {
@@ -102,14 +110,43 @@ namespace Assets.Scripts
                         case TileType.BedHead:
                             this.ProcessBedHead(bed, x, y);
                             break;
-                        case TileType.BedFoot:
-                            break;
                         case TileType.Wall:
                             this.ProcessWall(wall, wallL, wallT, wallX, x, y);
+                            break;
+                        case TileType.Door:
+                            ProcessDoor(door, x, y);
+                            break;
+                        case TileType.BedFoot:
+                        case TileType.DoorFrame:
                             break;
                     }
                 }
             }
+
+            for (int x = 0; x < this.Size.X; x++)
+            {
+                for (int y = 0; y < this.Size.Y; y++)
+                {
+                    if (this.Tiles[x, y].OccupyingObject != null)
+                        this.Tiles[x, y].OccupyingObject.transform.SetParent(parent.transform);
+                }
+            }
+        }
+
+        private void ProcessDoor(GameObject door, int x, int y)
+        {
+            var doorResult = this.CalculateDoorType(x, y);
+
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(door);
+            Vector2 doorPosition = new Vector2(x, y);
+            doorPosition += (Vector2)doorResult.Frames[0];
+            doorPosition += (Vector2)doorResult.Frames[1];
+            doorPosition /= 3;
+
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(doorResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(doorPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, doorPosition.y);
+            this.Tiles[doorResult.Frames[0].X, doorResult.Frames[0].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.Tiles[doorResult.Frames[1].X, doorResult.Frames[1].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
         }
 
         private void ProcessWall(GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, int x, int y)
@@ -140,10 +177,8 @@ namespace Assets.Scripts
             var bedResult = this.CalculateBedType(x, y);
 
             this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(bed);
-            Debug.Log(this.Tiles[x, y].OccupyingObject.GetInstanceID());
-            Debug.Log(x + " " + y + " foot: " + bedResult.FootPosition.X + " " + bedResult.FootPosition.Y + " rotation: " + bedResult.Rotation);
             Vector2 bedPosition = new Vector2(x, y);
-            bedPosition += new Vector2(bedResult.FootPosition.X, bedResult.FootPosition.Y);
+            bedPosition += (Vector2)bedResult.FootPosition;
             bedPosition /= 2;
 
             this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(bedResult.Rotation, Vector3.up);
@@ -168,7 +203,7 @@ namespace Assets.Scripts
             {
                 return new BedTypeResult()
                 {
-                    Rotation =  180,
+                    Rotation = 180,
                     FootPosition = new Point(x - 1, y)
                 };
             }
@@ -195,6 +230,55 @@ namespace Assets.Scripts
             {
                 Rotation = -90,
                 FootPosition = new Point(x, y + 1)
+            };
+        }
+
+        private DoorTypeResult CalculateDoorType(int x, int y)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+
+            if (x - 1 >= 0)
+            {
+                left = this.Tiles[x - 1, y].Type == TileType.DoorFrame;
+            }
+
+            if (y - 1 >= 0)
+            {
+                down = this.Tiles[x, y - 1].Type == TileType.DoorFrame;
+            }
+
+            if (x + 1 < this.Size.X)
+            {
+                right = this.Tiles[x + 1, y].Type == TileType.DoorFrame;
+            }
+
+            if (y + 1 < this.Size.Y)
+            {
+                up = this.Tiles[x, y + 1].Type == TileType.DoorFrame;
+            }
+
+            if (up && down)
+                return new DoorTypeResult()
+                       {
+                           Frames = new Point[]
+                                    {
+                                        new Point(x, y - 1),
+                                        new Point(x, y + 1)
+                                    },
+                           Rotation = 0
+                       };
+
+            return new DoorTypeResult()
+            {
+                Frames = new Point[]
+                                {
+                                        new Point(x - 1, y),
+                                        new Point(x + 1, y)
+                                },
+                Rotation = 90
             };
         }
 
@@ -230,10 +314,10 @@ namespace Assets.Scripts
 
             if (up && down && left)
                 return new WallTypeResult()
-                       {
-                           Rotation = 0,
-                           Type = WallType.T
-                       };
+                {
+                    Rotation = 0,
+                    Type = WallType.T
+                };
 
             if (up && down && right)
                 return new WallTypeResult()

@@ -25,13 +25,22 @@ namespace Assets.Scripts
 
         public GameObject Bed;
 
+        public GameObject Door;
+
+        public GameObject Parent;
+
+        public GameObject FloorGrid;
+
         public void Start()
         {
             Instance = this;
 
             this.Map = new Grid(MapFile.text);
 
-            this.Map.GeneratedMapVisibles(this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed);
+            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door);
+
+            FloorGrid.transform.localScale = new Vector3(this.Map.Size.X, 1, this.Map.Size.Y);
+            this.FloorGrid.transform.position = new Vector3(this.Map.Size.X / 2, 0, this.Map.Size.Y / 2);
 
             DontDestroyOnLoad(this.gameObject);
 
