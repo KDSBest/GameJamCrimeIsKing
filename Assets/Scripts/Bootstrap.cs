@@ -8,6 +8,7 @@ namespace Assets.Scripts
 {
     public class Bootstrap : MonoBehaviour
     {
+        public TextAsset MapFile;
         public static Bootstrap Instance;
 
         public Grid Map;
@@ -28,8 +29,7 @@ namespace Assets.Scripts
         {
             Instance = this;
 
-            var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Map/map.txt");
-            this.Map = new Grid(textAsset.text);
+            this.Map = new Grid(MapFile.text);
 
             this.Map.GeneratedMapVisibles(this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed);
 

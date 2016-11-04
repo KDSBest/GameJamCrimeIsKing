@@ -229,28 +229,60 @@ namespace Assets.Scripts
                 return WallType.X;
 
             if (up && down && left)
-                return WallType.T;
+                return new WallTypeResult()
+                       {
+                           Rotation = 0,
+                           Type = WallType.T
+                       };
 
             if (up && down && right)
-                return WallType.T;
+                return new WallTypeResult()
+                {
+                    Rotation = 180,
+                    Type = WallType.T
+                };
 
             if (up && left && right)
-                return WallType.T;
+                return new WallTypeResult()
+                {
+                    Rotation = 90,
+                    Type = WallType.T
+                };
 
             if (down && left && right)
-                return WallType.T;
+                return new WallTypeResult()
+                {
+                    Rotation = -90,
+                    Type = WallType.T
+                };
 
             if (up && left)
-                return WallType.L;
+                return new WallTypeResult()
+                {
+                    Rotation = 90,
+                    Type = WallType.L
+                };
 
             if (up && right)
-                return WallType.L;
+                return new WallTypeResult()
+                {
+                    Rotation = 180,
+                    Type = WallType.L
+                };
 
             if (down && left)
-                return WallType.L;
+                return new WallTypeResult()
+                {
+                    Rotation = 0,
+                    Type = WallType.L
+                };
 
             if (down && right)
-                return WallType.L;
+                return new WallTypeResult()
+                {
+                    Rotation = -90,
+                    Type = WallType.L
+                };
 
             if (up || down)
                 return WallType.I;
