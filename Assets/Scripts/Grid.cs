@@ -14,7 +14,8 @@ namespace Assets.Scripts
 
         public Point Size;
 
-        public List<Tile> PossibleTreasureTiles = new List<Tile>(); 
+        public List<Tile> PossibleTreasureTiles = new List<Tile>();
+        public List<Point> PossibleThiefSpawns = new List<Point>();
 
         private const char FloorChar = ' ';
         private const char WallChar = '#';
@@ -27,7 +28,7 @@ namespace Assets.Scripts
         private const char CupboardChar = 'S';
         private const char WalkableDirectionChar = '~';
 
-        private const int CupboardHP = 20;
+        private const int CupboardHP = 15;
 
         public Grid(string mapFileContent)
         {
@@ -70,7 +71,8 @@ namespace Assets.Scripts
                             this.Tiles[x, y].WasDoor = true;
                             break;
                         case ThiefChar:
-                            this.Tiles[x, y].Type = TileType.Thief;
+                            this.Tiles[x, y].Type = TileType.Walkable;
+                            this.PossibleThiefSpawns.Add(new Point(x, y));
                             break;
                         case GuardChar:
                             this.Tiles[x, y].Type = TileType.Guard;

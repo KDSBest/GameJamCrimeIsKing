@@ -146,17 +146,11 @@ public class CriminalController : BaseController
     public void Awake()
     {
         base.Awake();
-        Bootstrap.Instance.Map.Traverse((x, y, tile) =>
-        {
-            if (tile.Type == TileType.Thief)
-            {
-                this.CurrentPosition = new Point(x, y);
-                this.CheckAdjacentTiles();
-                return false;
-            }
 
-            return true;
-        });
+        var spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleThiefSpawns);
+        this.CurrentPosition = spawn;
+        Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Thief;
+        this.CheckAdjacentTiles();
 
         ForceCurrentPosition();
 
