@@ -15,18 +15,19 @@ public class TurnController : MonoBehaviour
 
     public Button StartTurnButton;
 
+    public Turn CurrenTurn;
+
     public enum Turn
     {
         King,
+
         Criminal
     }
-
-    public Turn CurrenTurn;
 
     // Use this for initialization
     public void Start()
     {
-        this.CurrenTurn = Turn.King;
+        this.CurrenTurn = Turn.Criminal;
 
         this.EndTurnButton.onClick.RemoveAllListeners();
         this.EndTurnButton.onClick.AddListener(this.EndCurrentTurn);
@@ -35,7 +36,8 @@ public class TurnController : MonoBehaviour
         this.StartTurnButton.onClick.AddListener(this.StartTurn);
 
         this.BlackOverlay.SetActive(true);
-
+        this.SetText();
+        this.CriminalController.StartTurn();
     }
 
     public void StartTurn()
@@ -47,7 +49,7 @@ public class TurnController : MonoBehaviour
     public void EndCurrentTurn()
     {
         this.CurrenTurn = this.CurrenTurn == Turn.King ? Turn.Criminal : Turn.King;
-        this.CurrentTurnDisplayText.text = this.CurrenTurn.ToString();
+        this.SetText();
         this.BlackOverlay.SetActive(true);
         this.StartTurnButton.gameObject.SetActive(true);
 
@@ -62,5 +64,10 @@ public class TurnController : MonoBehaviour
                 this.CriminalController.StartTurn();
                 break;
         }
+    }
+
+    private void SetText()
+    {
+        this.CurrentTurnDisplayText.text = this.CurrenTurn.ToString();
     }
 }

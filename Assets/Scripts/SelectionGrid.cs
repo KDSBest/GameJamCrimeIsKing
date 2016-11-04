@@ -13,7 +13,7 @@ namespace Assets.Scripts
 
         public GameObject WaypointPassOverlay;
 
-        public void OnMouseOver()
+        public void Select()
         {
             var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -35,7 +35,7 @@ namespace Assets.Scripts
 
                         while (current != null && current.Parent != null)
                         {
-                            Create(this.WaypointPassOverlay, current.Position);
+                            this.Create(this.WaypointPassOverlay, current.Position);
                             current = current.Parent;
                         }
                     }
