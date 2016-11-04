@@ -160,6 +160,7 @@ namespace Assets.Scripts
         {
             GameObject go = GameObject.Instantiate(toClone);
             go.transform.position = new Vector3(point.X, 0.05f, point.Y);
+            go.transform.SetParent(this.transform);
             this.WaypointsAllowed.Add(go);
         }
 
@@ -175,6 +176,7 @@ namespace Assets.Scripts
         {
             GameObject go = GameObject.Instantiate(toClone);
             go.transform.position = new Vector3(point.X, 0.5f, point.Y);
+            go.transform.SetParent(this.transform);
             this.Waypoints.Add(go);
         }
 
