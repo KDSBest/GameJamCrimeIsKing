@@ -27,6 +27,15 @@ namespace Assets.Scripts
                 tile.HasTreasure = treasure;
         }
 
+        public void RemoveHP(int hp)
+        {
+            this.HP -= hp;
+            if (this.HP < 0)
+                this.HP = 0;
+            foreach (var tile in this.LinkedTiles)
+                tile.HP = this.HP;
+        }
+
         public Tile(TileType type, GameObject occupyingObject)
         {
             this.Type = type;

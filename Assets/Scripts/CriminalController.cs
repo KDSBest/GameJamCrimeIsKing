@@ -3,6 +3,7 @@ using Assets.Scripts;
 using DG.Tweening;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CriminalController : BaseController
 {
@@ -18,9 +19,9 @@ public class CriminalController : BaseController
 
     private Vector3[] currentMoveWaypoints;
 
-    public GameObject Button;
+    public int Treasures = 0;
 
-    public Canvas Canvas;
+    public Text TreasureText;
 
     public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
@@ -105,6 +106,12 @@ public class CriminalController : BaseController
         this.CheckAdjacentTiles();
     }
 
+    private void GiveTreasure()
+    {
+        this.Treasures++;
+        this.TreasureText.text = this.Treasures.ToString();
+    }
+
     public void ProcessAdjacentTile(Point position, Tile tile)
     {
         Point positionCopyIntoClosure = position;
@@ -120,27 +127,39 @@ public class CriminalController : BaseController
 
                 if (tileCopyIntoClosure.WasDoor)
                 {
-                    SpawnButton(this.Button, this.Canvas, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
                     {
                         tileCopyIntoClosure.Type = TileType.Door;
                         tileCopyIntoClosure.HP = 1;
-                        this.UpdateUIElements();
                     }, "Close Door (" + tileCopyIntoClosure.HP + ")");
                 }
                 break;
             case TileType.Door:
-                SpawnButton(this.Button, this.Canvas, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
                 {
                     tileCopyIntoClosure.Type = TileType.Walkable;
                     tileCopyIntoClosure.HP = 1;
-                    this.UpdateUIElements();
                 }, "Open Door (" + tileCopyIntoClosure.HP + ")");
                 break;
             case TileType.BedHead:
-                break;
             case TileType.BedFoot:
-                break;
             case TileType.Cupboard:
+                if (tileCopyIntoClosure.HP > 0 || tileCopyIntoClosure.HasTreasure)
+                {
+                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    {
+                        if (tileCopyIntoClosure.HasTreasure)
+                        {
+                            tileCopyIntoClosure.SetTreasure(false);
+                            this.GiveTreasure();
+                            Debug.Log("You got " + this.Treasures + " Treasures.");
+                        }
+                        else
+                        {
+                            Debug.Log("Nothing found!");
+                        }
+                    }, "Search (" + tileCopyIntoClosure.HP + ")");
+                }
                 break;
         }
     }
