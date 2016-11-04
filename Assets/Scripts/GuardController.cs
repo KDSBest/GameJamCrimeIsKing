@@ -32,6 +32,7 @@ public class GuardController : BaseController
                 if (index == this.Index)
                 {
                     this.CurrentPosition = new Point(x, y);
+                    this.CheckAdjacentTiles();
                     return false;
                 }
                 index++;
@@ -47,6 +48,7 @@ public class GuardController : BaseController
     {
         base.MoveTo(currentPosition, actionPointCost, waypoints);
         this.Guard.transform.position = new Vector3(this.CurrentPosition.X, this.Guard.transform.position.y, this.CurrentPosition.Y);
+        Bootstrap.Instance.Map.Tiles[currentPosition.X, currentPosition.Y].Type = TileType.Guard;
     }
 
     public void ContinueTurn()

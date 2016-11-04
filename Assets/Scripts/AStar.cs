@@ -9,7 +9,6 @@ namespace Assets.Scripts
     {
         public static AStarLocation Search(Point startPosition, Point endPosition, Grid map)
         {
-
             var openList = new List<AStarLocation>();
             var closedList = new List<AStarLocation>();
             AStarLocation current = null;

@@ -31,13 +31,15 @@ namespace Assets.Scripts
 
         public GameObject FloorGrid;
 
+        public GameObject Cupboard;
+
         public void Start()
         {
             Instance = this;
 
             this.Map = new Grid(MapFile.text);
 
-            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door);
+            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, Cupboard);
 
             FloorGrid.transform.localScale = new Vector3(this.Map.Size.X, 1, this.Map.Size.Y);
             this.FloorGrid.transform.position = new Vector3(this.Map.Size.X / 2, 0, this.Map.Size.Y / 2);

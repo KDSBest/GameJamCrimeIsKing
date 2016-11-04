@@ -19,6 +19,7 @@ public class KingController : BaseController
     {
         base.StartTurn();
 
+        currentGuardIndex = 0;
         this.canMove = false;
         this.Guards = this.Guards.OrderBy(x => x.gameObject.name).ToList();
         foreach (GuardController guardController in this.Guards)
@@ -38,26 +39,35 @@ public class KingController : BaseController
             return;
         }
 
-        if (this.CurrentSelectedGuard.CurrentActionPoints <= 0)
+        var orderedGuards = this.Guards.Where(x => x.CurrentActionPoints > 0).OrderBy(x => x.name).ToList();
+
+        if (this.CurrentSelectedGuard.CurrentActionPoints <= 0 && orderedGuards.Count > 0)
         {
-            var guard = this.Guards.FirstOrDefault(x => x.CurrentActionPoints > 0);
+            var guard = orderedGuards.First();
             if (guard != null)
                 this.SelectGuard(guard);
         }
 
         this.CurrentSelectedGuard.UpdateController();
 
-        if (Input.GetKeyUp(KeyCode.A))
+        if (orderedGuards.Count > 0)
         {
-            var guard = this.Guards.OrderBy(x => x.gameObject.name).First();
+            if (Input.GetKeyUp(KeyCode.A))
+            {
+                currentGuardIndex++;
+                this.currentGuardIndex = currentGuardIndex % orderedGuards.Count;
+                var guard = orderedGuards[this.currentGuardIndex];
+                this.SelectGuard(guard);
+            }
+            else if (Input.GetKeyUp(KeyCode.D))
+            {
+                currentGuardIndex--;
+                if (this.currentGuardIndex < 0)
+                    this.currentGuardIndex = orderedGuards.Count - 1;
+                var guard = orderedGuards[this.currentGuardIndex];
 
-            this.SelectGuard(guard);
-        }
-        else if (Input.GetKeyUp(KeyCode.D))
-        {
-            var guard = this.Guards.OrderByDescending(x => x.gameObject.name).First();
-
-            this.SelectGuard(guard);
+                this.SelectGuard(guard);
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Alpha1))
