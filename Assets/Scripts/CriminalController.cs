@@ -10,7 +10,7 @@ public class CriminalController : BaseController
 
     public ActorSkill[] Skills = new ActorSkill[4];
 
-    private int waypointsLength = 0;
+    public Moba_Camera mobaCam;
 
     private Point currentMoveEndPoint;
 
@@ -24,10 +24,16 @@ public class CriminalController : BaseController
         this.currentMoveActionCost = actionPointCost;
         this.currentMoveWaypoints = waypoints;
 
-        this.waypointsLength = waypoints.Length;
         this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
 
+    }
+
+    public override void StartTurn()
+    {
+        base.StartTurn();
+        this.mobaCam.settings.lockTargetTransform = this.transform;
+        this.mobaCam.settings.cameraLocked = true;
     }
 
     public void UpdateWalkableTiles()
@@ -81,6 +87,7 @@ public class CriminalController : BaseController
         });
 
         ForceCurrentPosition();
+
     }
 
     private void ExecuteSkill(int id)

@@ -11,6 +11,8 @@ public class KingController : BaseController
 
     public ActorSkill[] Skills = new ActorSkill[4];
 
+    public Moba_Camera mobaCam;
+
     private int currentGuardIndex = 0;
 
     public override void StartTurn()
@@ -25,6 +27,8 @@ public class KingController : BaseController
             guardController.StartTurn();
         }
         this.SelectGuard(this.Guards[this.currentGuardIndex]);
+        this.mobaCam.settings.lockTargetTransform = this.Guards[this.currentGuardIndex].transform;
+        this.mobaCam.settings.cameraLocked = true;
     }
 
     public void Update()
@@ -84,6 +88,7 @@ public class KingController : BaseController
 
         this.CurrentSelectedGuard.IsSelected = true;
         this.CurrentSelectedGuard.ContinueTurn();
+        this.mobaCam.settings.lockTargetTransform = this.CurrentSelectedGuard.transform;
     }
 
     private void ExecuteSkill(int id)
