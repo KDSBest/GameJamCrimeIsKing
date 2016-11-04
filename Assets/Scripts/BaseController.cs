@@ -19,10 +19,7 @@ public class BaseController : MonoBehaviour, IController
 
     public SelectionGrid SelectionGrid;
 
-    public void Start()
-    {
-        this.CurrentActionPoints = this.ActionPointsMax;
-    }
+    public bool canMove = true;
 
     public virtual void StartTurn()
     {
@@ -31,30 +28,12 @@ public class BaseController : MonoBehaviour, IController
         this.GainActionPoints();
         this.HasTurnToken = true;
 
-        this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
+        this.SetActionPointsText();
 
-        this.SelectionGrid.CalculatePossibleTurns(this);
-    }
-
-    public void GainActionPoints()
-    {
-        this.CurrentActionPoints += this.ActionPointsGainPerRound;
-        this.CurrentActionPoints = Mathf.Clamp(this.CurrentActionPoints, 0, this.ActionPointsMax);
-        this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
-
-    }
-
-    public void SpendActionPoints(int amount)
-    {
-        this.CurrentActionPoints -= amount;
-        this.CurrentActionPoints = Mathf.Clamp(this.CurrentActionPoints, 0, this.ActionPointsMax);
-        this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
-
-    }
-
-    public virtual void AddWaypoint(int posX, int posY)
-    {
-        throw new System.NotImplementedException();
+        if (this.canMove)
+        {
+            this.SelectionGrid.CalculatePossibleTurns(this);
+        }
     }
 
     public virtual void EndTurn()
@@ -63,10 +42,37 @@ public class BaseController : MonoBehaviour, IController
         this.HasTurnToken = false;
     }
 
+    public void Start()
+    {
+        this.CurrentActionPoints = this.ActionPointsMax;
+    }
+
+    public void GainActionPoints()
+    {
+        this.CurrentActionPoints += this.ActionPointsGainPerRound;
+        this.CurrentActionPoints = Mathf.Clamp(this.CurrentActionPoints, 0, this.ActionPointsMax);
+        this.SetActionPointsText();
+    }
+
+    public void SpendActionPoints(int amount)
+    {
+        this.CurrentActionPoints -= amount;
+        this.CurrentActionPoints = Mathf.Clamp(this.CurrentActionPoints, 0, this.ActionPointsMax);
+        this.SetActionPointsText();
+    }
+
     public virtual void MoveTo(Point currentPosition, int actionPointCost)
     {
         this.CurrentPosition = currentPosition;
-        this.CurrentActionPoints -= actionPointCost;
+        this.SpendActionPoints(actionPointCost);
         this.SelectionGrid.CalculatePossibleTurns(this);
+    }
+
+    private void SetActionPointsText()
+    {
+        if (this.ActionPointCounter != null)
+        {
+            this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Linq;
 
-using UnityEditor;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -32,6 +32,10 @@ namespace Assets.Scripts
             this.Map = new Grid(textAsset.text);
 
             this.Map.GeneratedMapVisibles(this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed);
+
+            DontDestroyOnLoad(this.gameObject);
+
+            SceneManager.LoadScene("test");
         }
     }
 }
