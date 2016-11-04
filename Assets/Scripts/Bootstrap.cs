@@ -22,6 +22,8 @@ namespace Assets.Scripts
 
         public GameObject Wall;
 
+        public GameObject Bed;
+
         public void Start()
         {
             Instance = this;
@@ -29,7 +31,7 @@ namespace Assets.Scripts
             var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Map/map.txt");
             this.Map = new Grid(textAsset.text);
 
-            this.Map.GeneratedMapVisibles(this.Floor, this.Wall, this.WallL, this.WallT, this.WallX);
+            this.Map.GeneratedMapVisibles(this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed);
         }
     }
 }

@@ -2,5 +2,7 @@ public enum TileType
 {
     Walkable,
     Wall,
-    Door
+    Door,
+    BedHead,
+    BedFoot
 }

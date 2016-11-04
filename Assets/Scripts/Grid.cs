@@ -15,6 +15,8 @@ namespace Assets.Scripts
 
         private const char FloorChar = ' ';
         private const char WallChar = '#';
+        private const char BedHeadChar = 'B';
+        private const char BedFootChar = 'b';
 
         public Grid(string mapFileContent)
         {
@@ -24,7 +26,7 @@ namespace Assets.Scripts
                                           '\n'
                                       });
 
-            string onlyWithAllowedChars = new string(mapFileContent.Where(x => x == FloorChar || x == WallChar).ToArray());
+            string onlyWithAllowedChars = new string(mapFileContent.Where(x => x != '\r' && x != '\n').ToArray());
             Debug.Log("X Count: " + mapX);
             int mapY = onlyWithAllowedChars.Length / mapX;
             Debug.Log("Y Count: " + mapY);
@@ -39,8 +41,14 @@ namespace Assets.Scripts
 
                     switch (onlyWithAllowedChars[x + y * mapX])
                     {
-                        case '#':
+                        case WallChar:
                             this.Tiles[x, y].Type = TileType.Wall;
+                            break;
+                        case BedHeadChar:
+                            this.Tiles[x, y].Type = TileType.BedHead;
+                            break;
+                        case BedFootChar:
+                            this.Tiles[x, y].Type = TileType.BedFoot;
                             break;
                     }
                 }
@@ -71,7 +79,7 @@ namespace Assets.Scripts
             this.Tiles[x, y] = new Tile(type, occupyingObject);
         }
 
-        public void GeneratedMapVisibles(GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX)
+        public void GeneratedMapVisibles(GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed)
         {
             for (int x = 0; x < this.Size.X; x++)
             {
@@ -79,39 +87,118 @@ namespace Assets.Scripts
                 {
                     if (this.Tiles[x, y].OccupyingObject != null)
                         GameObject.Destroy(this.Tiles[x, y].OccupyingObject);
+                }
+            }
 
+            for (int x = 0; x < this.Size.X; x++)
+            {
+                for (int y = 0; y < this.Size.Y; y++)
+                {
                     switch (this.Tiles[x, y].Type)
                     {
                         case TileType.Walkable:
-                            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(floor);
-                            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, 0, y);
+                            ProcessWalkable(floor, x, y);
+                            break;
+                        case TileType.BedHead:
+                            this.ProcessBedHead(bed, x, y);
+                            break;
+                        case TileType.BedFoot:
                             break;
                         case TileType.Wall:
-                            WallType wallType = this.CalculateWallType(x, y);
-
-                            switch (wallType)
-                            {
-                                case WallType.I:
-                                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wall);
-                                    break;
-                                case WallType.L:
-                                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallL);
-                                    break;
-                                case WallType.T:
-                                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallT);
-                                    break;
-                                case WallType.X:
-                                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallX);
-                                    break;
-                            }
-                            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, 0, y);
+                            this.ProcessWall(wall, wallL, wallT, wallX, x, y);
                             break;
                     }
                 }
             }
         }
 
-        private WallType CalculateWallType(int x, int y)
+        private void ProcessWall(GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, int x, int y)
+        {
+            var wallResult = this.CalculateWallType(x, y);
+
+            switch (wallResult.Type)
+            {
+                case WallType.I:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wall);
+                    break;
+                case WallType.L:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallL);
+                    break;
+                case WallType.T:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallT);
+                    break;
+                case WallType.X:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallX);
+                    break;
+            }
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(wallResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, this.Tiles[x, y].OccupyingObject.transform.position.y, y);
+        }
+
+        private void ProcessBedHead(GameObject bed, int x, int y)
+        {
+            var bedResult = this.CalculateBedType(x, y);
+
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(bed);
+            Debug.Log(this.Tiles[x, y].OccupyingObject.GetInstanceID());
+            Debug.Log(x + " " + y + " foot: " + bedResult.FootPosition.X + " " + bedResult.FootPosition.Y + " rotation: " + bedResult.Rotation);
+            Vector2 bedPosition = new Vector2(x, y);
+            bedPosition += new Vector2(bedResult.FootPosition.X, bedResult.FootPosition.Y);
+            bedPosition /= 2;
+
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(bedResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(bedPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, bedPosition.y);
+            this.Tiles[bedResult.FootPosition.X, bedResult.FootPosition.Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+        }
+
+        private void ProcessWalkable(GameObject floor, int x, int y)
+        {
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(floor);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, 0, y);
+        }
+
+        private BedTypeResult CalculateBedType(int x, int y)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+
+            if (x - 1 >= 0 && this.Tiles[x - 1, y].Type == TileType.BedFoot)
+            {
+                return new BedTypeResult()
+                {
+                    Rotation =  180,
+                    FootPosition = new Point(x - 1, y)
+                };
+            }
+
+            if (y - 1 >= 0 && this.Tiles[x, y - 1].Type == TileType.BedFoot)
+            {
+                return new BedTypeResult()
+                {
+                    Rotation = 90,
+                    FootPosition = new Point(x, y - 1)
+                };
+            }
+
+            if (x + 1 < this.Size.X && this.Tiles[x + 1, y].Type == TileType.BedFoot)
+            {
+                return new BedTypeResult()
+                {
+                    Rotation = 0,
+                    FootPosition = new Point(x + 1, y)
+                };
+            }
+
+            return new BedTypeResult()
+            {
+                Rotation = -90,
+                FootPosition = new Point(x, y + 1)
+            };
+        }
+
+        private WallTypeResult CalculateWallType(int x, int y)
         {
             bool up = false;
             bool down = false;
@@ -165,7 +252,14 @@ namespace Assets.Scripts
             if (down && right)
                 return WallType.L;
 
-            return WallType.I;
+            if (up || down)
+                return WallType.I;
+
+            return new WallTypeResult()
+            {
+                Type = WallType.I,
+                Rotation = 90
+            };
         }
     }
 }
