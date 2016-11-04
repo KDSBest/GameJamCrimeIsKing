@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 using Assets.Scripts;
 
 using DG.Tweening;
 
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class CriminalController : BaseController
 {
@@ -39,12 +34,7 @@ public class CriminalController : BaseController
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
 
-    public override void StartTurn()
-    {
-        base.StartTurn();
-        this.mobaCam.settings.lockTargetTransform = this.transform;
-        this.mobaCam.settings.cameraLocked = true;
-    }
+
 
     public void UpdateWalkableTiles()
     {
@@ -80,7 +70,7 @@ public class CriminalController : BaseController
 
     protected override void CheckAdjacentTiles()
     {
-base.CheckAdjacentTiles();
+        base.CheckAdjacentTiles();
         var positionToCheck = this.CurrentPosition + new Point(1, 0);
         if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
         {
@@ -109,6 +99,8 @@ base.CheckAdjacentTiles();
     public override void StartTurn()
     {
         base.StartTurn();
+        this.mobaCam.settings.lockTargetTransform = this.transform;
+        this.mobaCam.settings.cameraLocked = true;
 
         this.CheckAdjacentTiles();
     }
