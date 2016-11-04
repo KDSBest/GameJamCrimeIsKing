@@ -8,6 +8,10 @@ namespace Assets.Scripts
 
         public GameObject OccupyingObject;
 
+        public bool IsDirectionTile = false;
+
+        public int HP = 1;
+
         public Tile(TileType type, GameObject occupyingObject)
         {
             this.Type = type;

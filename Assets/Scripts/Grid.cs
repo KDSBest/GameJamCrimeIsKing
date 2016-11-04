@@ -21,7 +21,10 @@ namespace Assets.Scripts
         private const char DoorFrameChar = 'd';
         private const char ThiefChar = 'T';
         private const char GuardChar = 'G';
+        private const char CupboardChar = 'S';
+        private const char WalkableDirectionChar = '~';
 
+        private const int CupboardHP = 20;
         public Grid(string mapFileContent)
         {
             int mapX = mapFileContent.IndexOfAny(new char[]
@@ -66,6 +69,13 @@ namespace Assets.Scripts
                         case GuardChar:
                             this.Tiles[x, y].Type = TileType.Guard;
                             break;
+                        case CupboardChar:
+                            this.Tiles[x, y].Type = TileType.Cupboard;
+                            break;
+                        case WalkableDirectionChar:
+                            this.Tiles[x, y].Type = TileType.Walkable;
+                            this.Tiles[x, y].IsDirectionTile = true;
+                            break;
                     }
                 }
             }
@@ -95,7 +105,7 @@ namespace Assets.Scripts
             this.Tiles[x, y] = new Tile(type, occupyingObject);
         }
 
-        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door)
+        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door, GameObject cupboard)
         {
             for (int x = 0; x < this.Size.X; x++)
             {
@@ -124,6 +134,9 @@ namespace Assets.Scripts
                         case TileType.Door:
                             ProcessDoor(door, x, y);
                             break;
+                        case TileType.Cupboard:
+                            ProcessCupboard(cupboard, x, y);
+                            break;
                         case TileType.BedFoot:
                         case TileType.DoorFrame:
                             break;
@@ -139,6 +152,17 @@ namespace Assets.Scripts
                         this.Tiles[x, y].OccupyingObject.transform.SetParent(parent.transform);
                 }
             }
+        }
+
+        private void ProcessCupboard(GameObject cupboard, int x, int y)
+        {
+            int rotation = this.CalculateCupboard(x, y);
+
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(cupboard);
+
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, this.Tiles[x, y].OccupyingObject.transform.position.y, y);
+            this.Tiles[x, y].HP = CupboardHP;
         }
 
         private void ProcessDoor(GameObject door, int x, int y)
@@ -239,6 +263,44 @@ namespace Assets.Scripts
                 Rotation = -90,
                 FootPosition = new Point(x, y + 1)
             };
+        }
+
+        private int CalculateCupboard(int x, int y)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+
+            if (x - 1 >= 0)
+            {
+                left = this.Tiles[x - 1, y].IsDirectionTile;
+                if (left)
+                    return -90;
+            }
+
+            if (y - 1 >= 0)
+            {
+                down = this.Tiles[x, y - 1].IsDirectionTile;
+                if (down)
+                    return 180;
+            }
+
+            if (x + 1 < this.Size.X)
+            {
+                right = this.Tiles[x + 1, y].IsDirectionTile;
+                if (right)
+                    return 90;
+            }
+
+            if (y + 1 < this.Size.Y)
+            {
+                up = this.Tiles[x, y + 1].IsDirectionTile;
+                if (up)
+                    return 0;
+            }
+
+            return 0;
         }
 
         private DoorTypeResult CalculateDoorType(int x, int y)
@@ -392,7 +454,7 @@ namespace Assets.Scripts
             {
                 for (int x = 0; x < this.Size.X; x++)
                 {
-                    if(!func(x, y, this.Tiles[x, y]))
+                    if (!func(x, y, this.Tiles[x, y]))
                         return;
                 }
             }

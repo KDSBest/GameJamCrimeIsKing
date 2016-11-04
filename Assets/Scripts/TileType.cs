@@ -10,5 +10,7 @@ public enum TileType
 
     Thief,
 
-    Guard
+    Guard,
+
+    Cupboard
 }
