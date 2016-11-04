@@ -1,38 +1,381 @@
 using System;
-
-using Assets.Scripts;
+using System.Linq;
 
 using UnityEditor;
 
 using UnityEngine;
 
-public class Grid
+namespace Assets.Scripts
 {
-    public Tile[,] Tiles;
-
-    public Point Size;
-
-    public Grid(Point size)
+    public class Grid
     {
-        this.Size = size;
-        this.Tiles = new Tile[this.Size.X, this.Size.Y];
-        for (int x = 0; x < this.Size.X; x++)
+        public Tile[,] Tiles;
+
+        public Point Size;
+
+        private const char FloorChar = ' ';
+        private const char WallChar = '#';
+        private const char BedHeadChar = 'B';
+        private const char BedFootChar = 'b';
+        private const char DoorChar = 'D';
+        private const char DoorFrameChar = 'd';
+
+        public Grid(string mapFileContent)
         {
-            for (int y = 0; y < this.Size.Y; y++)
+            int mapX = mapFileContent.IndexOfAny(new char[]
+                                      {
+                                          '\r',
+                                          '\n'
+                                      });
+
+            string onlyWithAllowedChars = new string(mapFileContent.Where(x => x != '\r' && x != '\n').ToArray());
+            Debug.Log("X Count: " + mapX);
+            int mapY = onlyWithAllowedChars.Length / mapX;
+            Debug.Log("Y Count: " + mapY);
+
+            this.Size = new Point(mapX, mapY);
+            this.Tiles = new Tile[this.Size.X, this.Size.Y];
+            for (int y = 0; y < mapY; y++)
             {
-                this.Tiles[x, y] = new Tile(TileType.Walkable, null);
+                for (int x = 0; x < mapX; x++)
+                {
+                    this.Tiles[x, y] = new Tile(TileType.Walkable, null);
+
+                    switch (onlyWithAllowedChars[x + y * mapX])
+                    {
+                        case WallChar:
+                            this.Tiles[x, y].Type = TileType.Wall;
+                            break;
+                        case BedHeadChar:
+                            this.Tiles[x, y].Type = TileType.BedHead;
+                            break;
+                        case BedFootChar:
+                            this.Tiles[x, y].Type = TileType.BedFoot;
+                            break;
+                        case DoorFrameChar:
+                            this.Tiles[x, y].Type = TileType.DoorFrame;
+                            break;
+                        case DoorChar:
+                            this.Tiles[x, y].Type = TileType.Door;
+                            break;
+                    }
+                }
             }
         }
-    }
 
-    public Grid(Point size, Tile[,] tiles)
-    {
-        this.Size = size;
-        this.Tiles = tiles;
-    }
+        public Grid(Point size)
+        {
+            this.Size = size;
+            this.Tiles = new Tile[this.Size.X, this.Size.Y];
+            for (int x = 0; x < this.Size.X; x++)
+            {
+                for (int y = 0; y < this.Size.Y; y++)
+                {
+                    this.Tiles[x, y] = new Tile(TileType.Walkable, null);
+                }
+            }
+        }
 
-    public void SetTile(TileType type, int x, int y, GameObject occupyingObject)
-    {
-        this.Tiles[x, y] = new Tile(type, occupyingObject);
+        public Grid(Point size, Tile[,] tiles)
+        {
+            this.Size = size;
+            this.Tiles = tiles;
+        }
+
+        public void SetTile(TileType type, int x, int y, GameObject occupyingObject)
+        {
+            this.Tiles[x, y] = new Tile(type, occupyingObject);
+        }
+
+        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door)
+        {
+            for (int x = 0; x < this.Size.X; x++)
+            {
+                for (int y = 0; y < this.Size.Y; y++)
+                {
+                    if (this.Tiles[x, y].OccupyingObject != null)
+                        GameObject.Destroy(this.Tiles[x, y].OccupyingObject);
+                }
+            }
+
+            for (int x = 0; x < this.Size.X; x++)
+            {
+                for (int y = 0; y < this.Size.Y; y++)
+                {
+                    switch (this.Tiles[x, y].Type)
+                    {
+                        case TileType.Walkable:
+                            ProcessWalkable(floor, x, y);
+                            break;
+                        case TileType.BedHead:
+                            this.ProcessBedHead(bed, x, y);
+                            break;
+                        case TileType.Wall:
+                            this.ProcessWall(wall, wallL, wallT, wallX, x, y);
+                            break;
+                        case TileType.Door:
+                            ProcessDoor(door, x, y);
+                            break;
+                        case TileType.BedFoot:
+                        case TileType.DoorFrame:
+                            break;
+                    }
+                }
+            }
+
+            for (int x = 0; x < this.Size.X; x++)
+            {
+                for (int y = 0; y < this.Size.Y; y++)
+                {
+                    if (this.Tiles[x, y].OccupyingObject != null)
+                        this.Tiles[x, y].OccupyingObject.transform.SetParent(parent.transform);
+                }
+            }
+        }
+
+        private void ProcessDoor(GameObject door, int x, int y)
+        {
+            var doorResult = this.CalculateDoorType(x, y);
+
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(door);
+            Vector2 doorPosition = new Vector2(x, y);
+            doorPosition += (Vector2)doorResult.Frames[0];
+            doorPosition += (Vector2)doorResult.Frames[1];
+            doorPosition /= 3;
+
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(doorResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(doorPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, doorPosition.y);
+            this.Tiles[doorResult.Frames[0].X, doorResult.Frames[0].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.Tiles[doorResult.Frames[1].X, doorResult.Frames[1].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+        }
+
+        private void ProcessWall(GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, int x, int y)
+        {
+            var wallResult = this.CalculateWallType(x, y);
+
+            switch (wallResult.Type)
+            {
+                case WallType.I:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wall);
+                    break;
+                case WallType.L:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallL);
+                    break;
+                case WallType.T:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallT);
+                    break;
+                case WallType.X:
+                    this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(wallX);
+                    break;
+            }
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(wallResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, this.Tiles[x, y].OccupyingObject.transform.position.y, y);
+        }
+
+        private void ProcessBedHead(GameObject bed, int x, int y)
+        {
+            var bedResult = this.CalculateBedType(x, y);
+
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(bed);
+            Vector2 bedPosition = new Vector2(x, y);
+            bedPosition += (Vector2)bedResult.FootPosition;
+            bedPosition /= 2;
+
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(bedResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(bedPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, bedPosition.y);
+            this.Tiles[bedResult.FootPosition.X, bedResult.FootPosition.Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+        }
+
+        private void ProcessWalkable(GameObject floor, int x, int y)
+        {
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(floor);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, 0, y);
+        }
+
+        private BedTypeResult CalculateBedType(int x, int y)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+
+            if (x - 1 >= 0 && this.Tiles[x - 1, y].Type == TileType.BedFoot)
+            {
+                return new BedTypeResult()
+                {
+                    Rotation = 180,
+                    FootPosition = new Point(x - 1, y)
+                };
+            }
+
+            if (y - 1 >= 0 && this.Tiles[x, y - 1].Type == TileType.BedFoot)
+            {
+                return new BedTypeResult()
+                {
+                    Rotation = 90,
+                    FootPosition = new Point(x, y - 1)
+                };
+            }
+
+            if (x + 1 < this.Size.X && this.Tiles[x + 1, y].Type == TileType.BedFoot)
+            {
+                return new BedTypeResult()
+                {
+                    Rotation = 0,
+                    FootPosition = new Point(x + 1, y)
+                };
+            }
+
+            return new BedTypeResult()
+            {
+                Rotation = -90,
+                FootPosition = new Point(x, y + 1)
+            };
+        }
+
+        private DoorTypeResult CalculateDoorType(int x, int y)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+
+            if (x - 1 >= 0)
+            {
+                left = this.Tiles[x - 1, y].Type == TileType.DoorFrame;
+            }
+
+            if (y - 1 >= 0)
+            {
+                down = this.Tiles[x, y - 1].Type == TileType.DoorFrame;
+            }
+
+            if (x + 1 < this.Size.X)
+            {
+                right = this.Tiles[x + 1, y].Type == TileType.DoorFrame;
+            }
+
+            if (y + 1 < this.Size.Y)
+            {
+                up = this.Tiles[x, y + 1].Type == TileType.DoorFrame;
+            }
+
+            if (up && down)
+                return new DoorTypeResult()
+                       {
+                           Frames = new Point[]
+                                    {
+                                        new Point(x, y - 1),
+                                        new Point(x, y + 1)
+                                    },
+                           Rotation = 0
+                       };
+
+            return new DoorTypeResult()
+            {
+                Frames = new Point[]
+                                {
+                                        new Point(x - 1, y),
+                                        new Point(x + 1, y)
+                                },
+                Rotation = 90
+            };
+        }
+
+        private WallTypeResult CalculateWallType(int x, int y)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+
+            if (x - 1 >= 0)
+            {
+                left = this.Tiles[x - 1, y].Type == TileType.Wall;
+            }
+
+            if (y - 1 >= 0)
+            {
+                down = this.Tiles[x, y - 1].Type == TileType.Wall;
+            }
+
+            if (x + 1 < this.Size.X)
+            {
+                right = this.Tiles[x + 1, y].Type == TileType.Wall;
+            }
+
+            if (y + 1 < this.Size.Y)
+            {
+                up = this.Tiles[x, y + 1].Type == TileType.Wall;
+            }
+
+            if (up && down && left && right)
+                return WallType.X;
+
+            if (up && down && left)
+                return new WallTypeResult()
+                {
+                    Rotation = 0,
+                    Type = WallType.T
+                };
+
+            if (up && down && right)
+                return new WallTypeResult()
+                {
+                    Rotation = 180,
+                    Type = WallType.T
+                };
+
+            if (up && left && right)
+                return new WallTypeResult()
+                {
+                    Rotation = 90,
+                    Type = WallType.T
+                };
+
+            if (down && left && right)
+                return new WallTypeResult()
+                {
+                    Rotation = -90,
+                    Type = WallType.T
+                };
+
+            if (up && left)
+                return new WallTypeResult()
+                {
+                    Rotation = 90,
+                    Type = WallType.L
+                };
+
+            if (up && right)
+                return new WallTypeResult()
+                {
+                    Rotation = 180,
+                    Type = WallType.L
+                };
+
+            if (down && left)
+                return new WallTypeResult()
+                {
+                    Rotation = 0,
+                    Type = WallType.L
+                };
+
+            if (down && right)
+                return new WallTypeResult()
+                {
+                    Rotation = -90,
+                    Type = WallType.L
+                };
+
+            if (up || down)
+                return WallType.I;
+
+            return new WallTypeResult()
+            {
+                Type = WallType.I,
+                Rotation = 90
+            };
+        }
     }
 }

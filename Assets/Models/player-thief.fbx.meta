@@ -1,20 +1,20 @@
 fileFormatVersion: 2
-guid: 82497ed5afb84d642b1192dddc6c1457
-timeCreated: 1478269351
+guid: afc6b29e8584455418e1db87ff4642cd
+timeCreated: 1478273217
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: pillow
-    400000: //RootNode
-    400002: pillow
-    2300000: //RootNode
-    2300002: pillow
-    3300000: //RootNode
-    3300002: pillow
-    4300000: bed
-    4300002: pillow
+    100000: figure
+    100002: //RootNode
+    400000: figure
+    400002: //RootNode
+    2300000: figure
+    2300002: //RootNode
+    3300000: figure
+    3300002: //RootNode
+    4300000: fig_base
+    4300002: figure
     9500000: //RootNode
   materials:
     importMaterials: 1
