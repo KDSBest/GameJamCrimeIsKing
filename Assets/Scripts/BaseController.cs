@@ -101,7 +101,7 @@ public class BaseController : MonoBehaviour, IController
 
         if (this.canMove)
         {
-            this.SelectionGrid.CalculatePossibleTurns(this);
+            this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints);
         }
     }
 
@@ -144,7 +144,7 @@ public class BaseController : MonoBehaviour, IController
     {
         this.CheckAdjacentTiles();
         this.UpdateButtonPositions();
-        this.SelectionGrid.CalculatePossibleTurns(this);
+        this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints);
     }
 
     protected virtual void CheckAdjacentTiles()

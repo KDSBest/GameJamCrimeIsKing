@@ -32,10 +32,10 @@ namespace Assets.Scripts
         [HideInInspector]
         public Point AllowedMovesSize = null;
 
-        public void CalculatePossibleTurns(BaseController baseController)
+        public void CalculatePossibleTurns(Point currentPosition, int actionPoints)
         {
-            this.CurrentPosition = baseController.CurrentPosition;
-            int actionPoints = baseController.CurrentActionPoints;
+            this.CurrentPosition = currentPosition;
+            Debug.Log("Calc Turns " + this.CurrentPosition.X + ", " + this.CurrentPosition.Y + " - " + actionPoints);
             AllowedMovesOffest = new Point(int.MaxValue, int.MaxValue);
             Point high = new Point(int.MinValue, int.MinValue);
 
@@ -93,7 +93,7 @@ namespace Assets.Scripts
 
             foreach (var fieldEntry in field)
             {
-                if (fieldEntry.Cost <= baseController.CurrentActionPoints)
+                if (fieldEntry.Cost <= actionPoints)
                 {
                     Point endPositionInMap = fieldEntry.Position + this.AllowedMovesOffest;
                     CreateWaypointAllowed(this.WaypointAllowed, endPositionInMap);
@@ -150,10 +150,6 @@ namespace Assets.Scripts
                         this.CurrentPosition = this.SelectedPoint;
                         baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
                         this.DeleteAllWaypoints();
-                        this.DeleteAllWaypointsAllowed();
-                        this.AllowedMoves = null;
-
-                        this.CalculatePossibleTurns(baseController);
                     }
                 }
             }

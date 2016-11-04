@@ -78,7 +78,7 @@ public class GuardController : BaseController
     {
         if (this.canMove && this.IsSelected)
         {
-            this.SelectionGrid.CalculatePossibleTurns(this);
+            this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints);
         }
     }
 
