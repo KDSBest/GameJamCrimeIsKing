@@ -35,6 +35,11 @@ public class KingController : BaseController
         this.mobaCam.settings.cameraLocked = true;
     }
 
+    protected override TileType GetIgnoreType()
+    {
+        return TileType.Guard;
+    }
+
     public void Update()
     {
         if (!this.HasTurnToken)

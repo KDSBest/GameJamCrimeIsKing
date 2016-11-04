@@ -32,7 +32,7 @@ namespace Assets.Scripts
         [HideInInspector]
         public Point AllowedMovesSize = null;
 
-        public void CalculatePossibleTurns(Point currentPosition, int actionPoints)
+        public void CalculatePossibleTurns(Point currentPosition, int actionPoints, TileType ignoreType, int ignoreGuardIndex)
         {
             this.CurrentPosition = currentPosition;
             Debug.Log("Calc Turns " + this.CurrentPosition.X + ", " + this.CurrentPosition.Y + " - " + actionPoints);
@@ -89,7 +89,7 @@ namespace Assets.Scripts
             Grid g = new Grid(AllowedMovesSize, tiles);
 
             Point startPosition = new Point(this.CurrentPosition.X - AllowedMovesOffest.X, this.CurrentPosition.Y - AllowedMovesOffest.Y);
-            var field = FlowField.Search(startPosition, g);
+            var field = FlowField.Search(startPosition, g, ignoreType, ignoreGuardIndex);
 
             foreach (var fieldEntry in field)
             {

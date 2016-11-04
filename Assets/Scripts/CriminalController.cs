@@ -103,6 +103,11 @@ public class CriminalController : BaseController
         this.CheckAdjacentTiles();
     }
 
+    protected override TileType GetIgnoreType()
+    {
+        return TileType.Thief;
+    }
+
     private void GiveTreasure()
     {
         this.Treasures++;
