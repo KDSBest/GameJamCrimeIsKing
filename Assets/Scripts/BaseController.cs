@@ -24,28 +24,32 @@ public class BaseController : MonoBehaviour, IController
     public SelectionGrid SelectionGrid;
 
     public bool canMove = true;
+    public GameObject Button;
+
+    public GameObject ButtonParent;
 
     private List<GameObject> actionButtons = new List<GameObject>();
+    private List<Point> actionButtonsPositions = new List<Point>();
 
     protected void TryToKillTile(Tile tile)
     {
         if (this.CurrentActionPoints >= tile.HP)
         {
             this.SpendActionPoints(tile.HP);
-            tile.HP = 0;
+            tile.RemoveHP(tile.HP);
         }
         else
         {
-            tile.HP -= this.CurrentActionPoints;
+            tile.RemoveHP(this.CurrentActionPoints);
             this.SpendActionPoints(this.CurrentActionPoints);
         }
     }
 
-    protected void SpawnButton(GameObject buttonGo, Canvas canvas, Point position, Tile tile, UnityAction buttonAction, string text)
+    protected void SpawnButton(Point position, Tile tile, UnityAction buttonAction, string text)
     {
-        this.actionButtons.Add(GameObject.Instantiate(buttonGo));
-        this.actionButtons[this.actionButtons.Count - 1].transform.SetParent(canvas.transform);
-        this.actionButtons[this.actionButtons.Count - 1].transform.position = Camera.main.WorldToScreenPoint(new Vector3(position.X, 0, position.Y));
+        this.actionButtons.Add(GameObject.Instantiate(this.Button));
+        this.actionButtonsPositions.Add(position);
+        this.actionButtons[this.actionButtons.Count - 1].transform.SetParent(this.ButtonParent.transform);
         var button = this.actionButtons[this.actionButtons.Count - 1].GetComponent<Button>();
         button.onClick.AddListener(new UnityAction(() =>
         {
@@ -54,10 +58,18 @@ public class BaseController : MonoBehaviour, IController
             {
                 buttonAction();
             }
+            this.UpdateUIElements();
         }));
         button.GetComponentInChildren<Text>().text = text;
     }
 
+    public void UpdateButtonPositions()
+    {
+        for (int i = 0; i < this.actionButtonsPositions.Count; i++)
+        {
+            this.actionButtons[i].transform.position = Camera.main.WorldToScreenPoint(new Vector3(this.actionButtonsPositions[i].X, 0, this.actionButtonsPositions[i].Y));
+        }
+    }
 
     public bool IsValidTilePosition(int x, int y)
     {
@@ -129,6 +141,7 @@ public class BaseController : MonoBehaviour, IController
     protected void UpdateUIElements()
     {
         this.CheckAdjacentTiles();
+        this.UpdateButtonPositions();
         this.SelectionGrid.CalculatePossibleTurns(this);
     }
 
@@ -137,11 +150,17 @@ public class BaseController : MonoBehaviour, IController
         RemoveUIButtonsForActions();
     }
 
+    public void LateUpdate()
+    {
+        UpdateButtonPositions();
+    }
+
     protected void RemoveUIButtonsForActions()
     {
         foreach (var go in actionButtons)
             GameObject.Destroy(go);
 
+        this.actionButtonsPositions.Clear();
         this.actionButtons.Clear();
     }
 
