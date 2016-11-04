@@ -150,6 +150,7 @@ namespace Assets.Scripts
                         this.CurrentPosition = this.SelectedPoint;
                         baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
                         this.DeleteAllWaypoints();
+                        this.CalculatePossibleTurns(baseController.CurrentPosition, baseController.CurrentActionPoints, baseController.GetIgnoreType(), baseController.Index);
                     }
                 }
             }

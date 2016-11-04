@@ -66,34 +66,6 @@ public class CriminalController : BaseController
         }
     }
 
-    protected override void CheckAdjacentTiles()
-    {
-        base.CheckAdjacentTiles();
-        var positionToCheck = this.CurrentPosition + new Point(1, 0);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-
-        positionToCheck = this.CurrentPosition + new Point(-1, 0);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-
-        positionToCheck = this.CurrentPosition + new Point(0, 1);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-
-        positionToCheck = this.CurrentPosition + new Point(0, -1);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-    }
-
     public override void StartTurn()
     {
         base.StartTurn();
@@ -103,7 +75,7 @@ public class CriminalController : BaseController
         this.CheckAdjacentTiles();
     }
 
-    protected override TileType GetIgnoreType()
+    public override TileType GetIgnoreType()
     {
         return TileType.Thief;
     }
@@ -119,7 +91,7 @@ public class CriminalController : BaseController
         }
     }
 
-    public void ProcessAdjacentTile(Point position, Tile tile)
+    public override void ProcessAdjacentTile(Point position, Tile tile)
     {
         Point positionCopyIntoClosure = position;
         var tileCopyIntoClosure = tile;

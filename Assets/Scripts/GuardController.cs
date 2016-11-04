@@ -29,7 +29,7 @@ public class GuardController : BaseController
         this.ActionPointsLastFrame = this.CurrentActionPoints;
     }
 
-    protected override TileType GetIgnoreType()
+    public override TileType GetIgnoreType()
     {
         return TileType.Guard;
     }
@@ -67,7 +67,48 @@ public class GuardController : BaseController
         base.MoveTo(currentPosition, actionPointCost, waypoints);
         this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f + 0.5f);
-        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
+        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Guard;
+        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].GuardIndex = this.Index;
+    }
+
+    public override void ProcessAdjacentTile(Point position, Tile tile)
+    {
+        Point positionCopyIntoClosure = position;
+        var tileCopyIntoClosure = tile;
+        switch (tile.Type)
+        {
+            case TileType.Wall:
+            case TileType.DoorFrame:
+            case TileType.BedHead:
+            case TileType.BedFoot:
+            case TileType.Cupboard:
+            case TileType.Guard:
+                break;
+            case TileType.Walkable:
+
+                if (tileCopyIntoClosure.WasDoor)
+                {
+                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    {
+                        tileCopyIntoClosure.Type = TileType.Door;
+                        tileCopyIntoClosure.HP = 1;
+                    }, "Close Door (" + tileCopyIntoClosure.HP + ")");
+                }
+                break;
+            case TileType.Door:
+                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                {
+                    tileCopyIntoClosure.Type = TileType.Walkable;
+                    tileCopyIntoClosure.HP = 1;
+                }, "Open Door (" + tileCopyIntoClosure.HP + ")");
+                break;
+            case TileType.Thief:
+                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                {
+                    this.HasWon = true;
+                }, "Catch (" + tileCopyIntoClosure.HP + ")");
+                break;
+        }
     }
 
     public void UpdateWalkableTiles()

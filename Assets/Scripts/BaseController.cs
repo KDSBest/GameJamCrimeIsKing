@@ -104,11 +104,11 @@ public abstract class BaseController : MonoBehaviour, IController
 
         if (this.canMove)
         {
-            this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
+            this.UpdateUIElements();
         }
     }
 
-    protected abstract TileType GetIgnoreType();
+    public abstract TileType GetIgnoreType();
 
     public virtual void EndTurn()
     {
@@ -155,7 +155,33 @@ public abstract class BaseController : MonoBehaviour, IController
     protected virtual void CheckAdjacentTiles()
     {
         RemoveUIButtonsForActions();
+
+        var positionToCheck = this.CurrentPosition + new Point(1, 0);
+        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
+        {
+            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
+        }
+
+        positionToCheck = this.CurrentPosition + new Point(-1, 0);
+        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
+        {
+            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
+        }
+
+        positionToCheck = this.CurrentPosition + new Point(0, 1);
+        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
+        {
+            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
+        }
+
+        positionToCheck = this.CurrentPosition + new Point(0, -1);
+        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
+        {
+            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
+        }
     }
+
+    public abstract void ProcessAdjacentTile(Point position, Tile tile);
 
     public void LateUpdate()
     {
