@@ -29,7 +29,7 @@ public class CriminalController : BaseController
         this.currentMoveActionCost = actionPointCost;
         this.currentMoveWaypoints = waypoints;
 
-        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
+        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
