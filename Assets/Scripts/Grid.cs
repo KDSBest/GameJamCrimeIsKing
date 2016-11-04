@@ -1,4 +1,7 @@
 using System;
+
+using UnityEditor;
+
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -20,6 +23,12 @@ namespace Assets.Scripts
                     this.Tiles[x, y] = new Tile(TileType.Walkable, null);
                 }
             }
+        }
+
+        public Grid(Point size, Tile[,] tiles)
+        {
+            this.Size = size;
+            this.Tiles = tiles;
         }
 
         public void SetTile(TileType type, int x, int y, GameObject occupyingObject)
