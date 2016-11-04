@@ -50,7 +50,7 @@ public abstract class BaseController : MonoBehaviour, IController
         }
     }
 
-    protected void SpawnButton(Point position, Tile tile, UnityAction buttonAction, string text)
+    protected void SpawnButton(bool IsFreeAction, Point position, Tile tile, UnityAction buttonAction, string text)
     {
         this.actionButtons.Add(GameObject.Instantiate(this.Button));
         this.actionButtonsPositions.Add(position);
@@ -58,10 +58,17 @@ public abstract class BaseController : MonoBehaviour, IController
         var button = this.actionButtons[this.actionButtons.Count - 1].GetComponent<Button>();
         button.onClick.AddListener(new UnityAction(() =>
         {
-            TryToKillTile(tile);
-            if (tile.HP == 0)
+            if (IsFreeAction)
             {
                 buttonAction();
+            }
+            else
+            {
+                TryToKillTile(tile);
+                if (tile.HP == 0)
+                {
+                    buttonAction();
+                }
             }
             this.UpdateUIElements();
         }));
@@ -142,7 +149,9 @@ public abstract class BaseController : MonoBehaviour, IController
         Bootstrap.Instance.Map.Tiles[this.CurrentPosition.X, this.CurrentPosition.Y].Type = TileType.Walkable;
         this.CurrentPosition = currentPosition;
         this.SpendActionPoints(actionPointCost);
-        this.UpdateUIElements();
+
+        if (this.HasTurnToken)
+            this.UpdateUIElements();
     }
 
     protected void UpdateUIElements()

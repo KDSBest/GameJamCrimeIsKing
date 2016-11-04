@@ -106,7 +106,7 @@ public class CriminalController : BaseController
 
                 if (tileCopyIntoClosure.WasDoor)
                 {
-                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                     {
                         tileCopyIntoClosure.Type = TileType.Door;
                         tileCopyIntoClosure.HP = 1;
@@ -114,7 +114,7 @@ public class CriminalController : BaseController
                 }
                 break;
             case TileType.Door:
-                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                 {
                     tileCopyIntoClosure.Type = TileType.Walkable;
                     tileCopyIntoClosure.HP = 1;
@@ -125,7 +125,7 @@ public class CriminalController : BaseController
             case TileType.Cupboard:
                 if (tileCopyIntoClosure.HP > 0 || tileCopyIntoClosure.HasTreasure)
                 {
-                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                     {
                         if (tileCopyIntoClosure.HasTreasure)
                         {

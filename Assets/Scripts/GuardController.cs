@@ -87,25 +87,25 @@ public class GuardController : BaseController
 
                 if (tileCopyIntoClosure.WasDoor)
                 {
-                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                     {
                         tileCopyIntoClosure.Type = TileType.Door;
                         tileCopyIntoClosure.HP = 1;
-                    }, "Close Door (" + tileCopyIntoClosure.HP + ")");
+                    }, "Close Door");
                 }
                 break;
             case TileType.Door:
-                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                 {
                     tileCopyIntoClosure.Type = TileType.Walkable;
                     tileCopyIntoClosure.HP = 1;
-                }, "Open Door (" + tileCopyIntoClosure.HP + ")");
+                }, "Open Door");
                 break;
             case TileType.Thief:
-                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                 {
                     this.HasWon = true;
-                }, "Catch (" + tileCopyIntoClosure.HP + ")");
+                }, "Catch");
                 break;
         }
     }

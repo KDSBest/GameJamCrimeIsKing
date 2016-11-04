@@ -17,7 +17,15 @@ public class KingController : BaseController
 
     private int currentGuardIndex = 0;
 
+    public override void EndTurn()
+    {
+        base.EndTurn();
 
+        foreach (GuardController guardController in this.Guards)
+        {
+            guardController.EndTurn();
+        }
+    }
 
     public override void StartTurn()
     {
