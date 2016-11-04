@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
+
+using UnityEditor;
 
 namespace Assets.Scripts
 {
@@ -9,14 +12,24 @@ namespace Assets.Scripts
 
         public Grid Map;
 
-        public const int MapX = 100;
-        public const int MapY = 100;
+        public GameObject Floor;
+
+        public GameObject WallX;
+
+        public GameObject WallT;
+
+        public GameObject WallL;
+
+        public GameObject Wall;
 
         public void Start()
         {
             Instance = this;
 
-            this.Map = new Grid(new Point(MapX, MapY));
+            var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Map/map.txt");
+            this.Map = new Grid(textAsset.text);
+
+            this.Map.GeneratedMapVisibles(this.Floor, this.Wall, this.WallL, this.WallT, this.WallX);
         }
     }
 }
