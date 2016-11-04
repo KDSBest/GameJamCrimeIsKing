@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 using Assets.Scripts;
 
 using UnityEngine;
@@ -44,6 +46,7 @@ public class BaseController : MonoBehaviour, IController
 
     public void Awake()
     {
+        this.SelectionGrid = GameObject.FindObjectOfType<SelectionGrid>();
         this.CurrentActionPoints = this.ActionPointsMax;
     }
 
@@ -74,5 +77,10 @@ public class BaseController : MonoBehaviour, IController
         {
             this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
         }
+    }
+
+    protected void ForceCurrentPosition()
+    {
+        this.transform.position = new Vector3(this.CurrentPosition.X, this.transform.position.y, this.CurrentPosition.Y);
     }
 }

@@ -6,5 +6,9 @@ public enum TileType
     BedHead,
     BedFoot,
 
-    DoorFrame
+    DoorFrame,
+
+    Thief,
+
+    Guard
 }

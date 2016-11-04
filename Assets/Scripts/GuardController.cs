@@ -12,11 +12,35 @@ public class GuardController : BaseController
 
     public int ActionPointsLastFrame;
 
+    public int Index = 0;
+
     public override void StartTurn()
     {
         base.StartTurn();
 
         this.ActionPointsLastFrame = this.CurrentActionPoints;
+    }
+
+    public void Awake()
+    {
+        base.Awake();
+        int index = 0;
+        Bootstrap.Instance.Map.Traverse((x, y, tile) =>
+        {
+            if (tile.Type == TileType.Guard)
+            {
+                if (index == this.Index)
+                {
+                    this.CurrentPosition = new Point(x, y);
+                    return false;
+                }
+                index++;
+            }
+
+            return true;
+        });
+
+        ForceCurrentPosition();
     }
 
     public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)

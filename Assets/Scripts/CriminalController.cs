@@ -26,7 +26,7 @@ public class CriminalController : BaseController
 
         this.waypointsLength = waypoints.Length;
         this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
-        this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);
+        base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
 
     }
 
@@ -64,6 +64,23 @@ public class CriminalController : BaseController
 
     private void CheckAdjacentSquares()
     {
+    }
+
+    public void Awake()
+    {
+        base.Awake();
+        Bootstrap.Instance.Map.Traverse((x, y, tile) =>
+        {
+            if (tile.Type == TileType.Thief)
+            {
+                this.CurrentPosition = new Point(x, y);
+                return false;
+            }
+
+            return true;
+        });
+
+        ForceCurrentPosition();
     }
 
     private void ExecuteSkill(int id)

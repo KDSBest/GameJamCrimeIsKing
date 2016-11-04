@@ -19,6 +19,8 @@ namespace Assets.Scripts
         private const char BedFootChar = 'b';
         private const char DoorChar = 'D';
         private const char DoorFrameChar = 'd';
+        private const char ThiefChar = 'T';
+        private const char GuardChar = 'G';
 
         public Grid(string mapFileContent)
         {
@@ -57,6 +59,12 @@ namespace Assets.Scripts
                             break;
                         case DoorChar:
                             this.Tiles[x, y].Type = TileType.Door;
+                            break;
+                        case ThiefChar:
+                            this.Tiles[x, y].Type = TileType.Thief;
+                            break;
+                        case GuardChar:
+                            this.Tiles[x, y].Type = TileType.Guard;
                             break;
                     }
                 }
@@ -262,14 +270,14 @@ namespace Assets.Scripts
 
             if (up && down)
                 return new DoorTypeResult()
-                       {
-                           Frames = new Point[]
+                {
+                    Frames = new Point[]
                                     {
                                         new Point(x, y - 1),
                                         new Point(x, y + 1)
                                     },
-                           Rotation = 0
-                       };
+                    Rotation = 0
+                };
 
             return new DoorTypeResult()
             {
@@ -376,6 +384,18 @@ namespace Assets.Scripts
                 Type = WallType.I,
                 Rotation = 90
             };
+        }
+
+        public void Traverse(Func<int, int, Tile, bool> func)
+        {
+            for (int y = 0; y < this.Size.Y; y++)
+            {
+                for (int x = 0; x < this.Size.X; x++)
+                {
+                    if(!func(x, y, this.Tiles[x, y]))
+                        return;
+                }
+            }
         }
     }
 }
