@@ -19,9 +19,9 @@ public class GuardController : BaseController
         this.ActionPointsLastFrame = this.CurrentActionPoints;
     }
 
-    public override void MoveTo(Point currentPosition, int actionPointCost)
+    public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
-        base.MoveTo(currentPosition, actionPointCost);
+        base.MoveTo(currentPosition, actionPointCost, waypoints);
         this.Guard.transform.position = new Vector3(this.CurrentPosition.X, this.Guard.transform.position.y, this.CurrentPosition.Y);
     }
 

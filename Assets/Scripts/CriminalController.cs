@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 using Assets.Scripts;
+
+using DG.Tweening;
 
 using UnityEngine;
 
@@ -10,15 +10,29 @@ public class CriminalController : BaseController
 
     public ActorSkill[] Skills = new ActorSkill[4];
 
-    public override void MoveTo(Point currentPosition, int actionPointCost)
+    private int waypointsLength = 0;
+
+    private Point currentMoveEndPoint;
+
+    private int currentMoveActionCost;
+
+    private Vector3[] currentMoveWaypoints;
+
+    public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
-        base.MoveTo(currentPosition, actionPointCost);
-        this.Criminal.transform.position = new Vector3(this.CurrentPosition.X, this.Criminal.transform.position.y, this.CurrentPosition.Y);
+        this.currentMoveEndPoint = currentPosition;
+        this.currentMoveActionCost = actionPointCost;
+        this.currentMoveWaypoints = waypoints;
+
+        this.waypointsLength = waypoints.Length;
+        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
+        this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);
+
     }
 
-    private void CheckAdjacentSquares()
+    public void UpdateWalkableTiles()
     {
-
+        base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
     }
 
     public void Update()
@@ -48,13 +62,17 @@ public class CriminalController : BaseController
         }
     }
 
+    private void CheckAdjacentSquares()
+    {
+    }
+
     private void ExecuteSkill(int id)
     {
         ActorSkill skill = this.Skills[id];
 
         if (this.CurrentActionPoints >= skill.ActionPointCost)
         {
-            base.SpendActionPoints(skill.ActionPointCost);
+            this.SpendActionPoints(skill.ActionPointCost);
             skill.Execute();
         }
     }

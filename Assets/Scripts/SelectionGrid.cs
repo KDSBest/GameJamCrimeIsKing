@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Scripts
 {
@@ -164,10 +165,10 @@ namespace Assets.Scripts
                     }
                     else
                     {
+                        this.CurrentPosition = this.SelectedPoint;
+                        baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
                         this.DeleteAllWaypoints();
                         this.DeleteAllWaypointsAllowed();
-                        this.CurrentPosition = this.SelectedPoint;
-                        baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y]);
                         this.AllowedMoves = null;
                     }
                 }

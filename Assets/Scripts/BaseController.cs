@@ -42,7 +42,7 @@ public class BaseController : MonoBehaviour, IController
         this.HasTurnToken = false;
     }
 
-    public void Start()
+    public void Awake()
     {
         this.CurrentActionPoints = this.ActionPointsMax;
     }
@@ -61,7 +61,7 @@ public class BaseController : MonoBehaviour, IController
         this.SetActionPointsText();
     }
 
-    public virtual void MoveTo(Point currentPosition, int actionPointCost)
+    public virtual void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
         this.CurrentPosition = currentPosition;
         this.SpendActionPoints(actionPointCost);
