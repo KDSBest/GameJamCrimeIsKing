@@ -14,8 +14,6 @@ public class GuardController : BaseController
 
     public int ActionPointsLastFrame;
 
-    public int Index = 0;
-
     public bool hasArrived;
 
     private Point currentMoveEndPoint;
@@ -29,6 +27,11 @@ public class GuardController : BaseController
         base.StartTurn();
 
         this.ActionPointsLastFrame = this.CurrentActionPoints;
+    }
+
+    protected override TileType GetIgnoreType()
+    {
+        return TileType.Guard;
     }
 
     public void Awake()
@@ -77,7 +80,7 @@ public class GuardController : BaseController
     {
         if (this.canMove && this.IsSelected)
         {
-            this.SelectionGrid.CalculatePossibleTurns(this);
+            this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
         }
     }
 

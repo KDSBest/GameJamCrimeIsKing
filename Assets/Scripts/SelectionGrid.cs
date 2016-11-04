@@ -32,10 +32,10 @@ namespace Assets.Scripts
         [HideInInspector]
         public Point AllowedMovesSize = null;
 
-        public void CalculatePossibleTurns(BaseController baseController)
+        public void CalculatePossibleTurns(Point currentPosition, int actionPoints, TileType ignoreType, int ignoreGuardIndex)
         {
-            this.CurrentPosition = baseController.CurrentPosition;
-            int actionPoints = baseController.CurrentActionPoints;
+            this.CurrentPosition = currentPosition;
+            Debug.Log("Calc Turns " + this.CurrentPosition.X + ", " + this.CurrentPosition.Y + " - " + actionPoints);
             AllowedMovesOffest = new Point(int.MaxValue, int.MaxValue);
             Point high = new Point(int.MinValue, int.MinValue);
 
@@ -89,11 +89,11 @@ namespace Assets.Scripts
             Grid g = new Grid(AllowedMovesSize, tiles);
 
             Point startPosition = new Point(this.CurrentPosition.X - AllowedMovesOffest.X, this.CurrentPosition.Y - AllowedMovesOffest.Y);
-            var field = FlowField.Search(startPosition, g);
+            var field = FlowField.Search(startPosition, g, ignoreType, ignoreGuardIndex);
 
             foreach (var fieldEntry in field)
             {
-                if (fieldEntry.Cost <= baseController.CurrentActionPoints)
+                if (fieldEntry.Cost <= actionPoints)
                 {
                     Point endPositionInMap = fieldEntry.Position + this.AllowedMovesOffest;
                     CreateWaypointAllowed(this.WaypointAllowed, endPositionInMap);
@@ -104,38 +104,6 @@ namespace Assets.Scripts
                     this.AllowedMoves[fieldEntry.Position.X, fieldEntry.Position.Y] = -1;
                 }
             }
-
-            //for (int y = 0; y < AllowedMovesSize.Y; y++)
-            //{
-            //    for (int x = 0; x < AllowedMovesSize.X; x++)
-            //    {
-            //        Point endPositionInMap = new Point(AllowedMovesOffest.X + x, AllowedMovesOffest.Y + y);
-
-            //        Point endPosition = new Point(x, y);
-            //        Point startPosition = new Point(this.CurrentPosition.X - AllowedMovesOffest.X, this.CurrentPosition.Y - AllowedMovesOffest.Y);
-
-            //        this.AllowedMoves[x, y] = -1;
-
-            //        var astarResult = AStar.Search(startPosition, endPosition, g);
-
-            //        if (astarResult != null)
-            //        {
-            //            int walkLength = 0;
-
-            //            while (astarResult.Parent != null)
-            //            {
-            //                walkLength++;
-            //                astarResult = astarResult.Parent;
-            //            }
-
-            //            if (walkLength <= actionPoints)
-            //            {
-            //                CreateWaypointAllowed(this.WaypointAllowed, endPositionInMap);
-            //                this.AllowedMoves[x, y] = walkLength;
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         public void Select(BaseController baseController)
@@ -182,10 +150,6 @@ namespace Assets.Scripts
                         this.CurrentPosition = this.SelectedPoint;
                         baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
                         this.DeleteAllWaypoints();
-                        this.DeleteAllWaypointsAllowed();
-                        this.AllowedMoves = null;
-
-                        this.CalculatePossibleTurns(baseController);
                     }
                 }
             }

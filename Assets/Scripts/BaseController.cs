@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class BaseController : MonoBehaviour, IController
+public abstract class BaseController : MonoBehaviour, IController
 {
     public int CurrentActionPoints;
 
@@ -27,6 +27,11 @@ public class BaseController : MonoBehaviour, IController
     public GameObject Button;
 
     public GameObject ButtonParent;
+
+    [HideInInspector]
+    public bool HasWon { get; set; }
+
+    public int Index = 0;
 
     private List<GameObject> actionButtons = new List<GameObject>();
     private List<Point> actionButtonsPositions = new List<Point>();
@@ -99,9 +104,11 @@ public class BaseController : MonoBehaviour, IController
 
         if (this.canMove)
         {
-            this.SelectionGrid.CalculatePossibleTurns(this);
+            this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
         }
     }
+
+    protected abstract TileType GetIgnoreType();
 
     public virtual void EndTurn()
     {
@@ -142,7 +149,7 @@ public class BaseController : MonoBehaviour, IController
     {
         this.CheckAdjacentTiles();
         this.UpdateButtonPositions();
-        this.SelectionGrid.CalculatePossibleTurns(this);
+        this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
     }
 
     protected virtual void CheckAdjacentTiles()

@@ -20,6 +20,8 @@ namespace Assets.Scripts
 
         public bool WasDoor = false;
 
+        public int GuardIndex = 0;
+
         public void SetTreasure(bool treasure)
         {
             this.HasTreasure = treasure;

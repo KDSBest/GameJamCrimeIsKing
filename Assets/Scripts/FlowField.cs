@@ -7,7 +7,7 @@ namespace Assets.Scripts
 {
     public static class FlowField
     {
-        public static FlowFieldLocation[,] Search(Point startPosition, Grid map)
+        public static FlowFieldLocation[,] Search(Point startPosition, Grid map, TileType ignoreType, int ignoreGuardIndex)
         {
             FlowFieldLocation[,] field = new FlowFieldLocation[map.Size.X, map.Size.Y];
 
@@ -26,7 +26,7 @@ namespace Assets.Scripts
             {
                 for (int x = 0; x < map.Size.X; x++)
                 {
-                    var points = GetWalkableAdjacentSquares(new Point(x, y), map);
+                    var points = GetWalkableAdjacentSquares(new Point(x, y), map, ignoreType, ignoreGuardIndex);
                     foreach (var point in points)
                     {
                         field[x, y].Neighbours.Add(field[point.X, point.Y]);
@@ -39,7 +39,7 @@ namespace Assets.Scripts
             return field;
         }
 
-        public static List<Point> GetWalkableAdjacentSquares(Point position, Grid map)
+        public static List<Point> GetWalkableAdjacentSquares(Point position, Grid map, TileType ignoreType, int ignoreGuardIndex)
         {
             var proposedLocations = new List<Point>()
             {
@@ -49,7 +49,7 @@ namespace Assets.Scripts
                 new Point(position.X + 1, position.Y),
             };
 
-            return proposedLocations.Where(l => l.X >= 0 && l.Y >= 0 && l.X < map.Size.X && l.Y < map.Size.Y && map.Tiles[l.X, l.Y].Type == TileType.Walkable).ToList();
+            return proposedLocations.Where(l => l.X >= 0 && l.Y >= 0 && l.X < map.Size.X && l.Y < map.Size.Y && (map.Tiles[l.X, l.Y].Type == TileType.Walkable || (map.Tiles[l.X, l.Y].Type == ignoreType && (ignoreType != TileType.Guard || map.Tiles[l.X, l.Y].GuardIndex == ignoreGuardIndex)))).ToList();
         }
 
         public static int ComputeHScore(int x, int y, int targetX, int targetY)
