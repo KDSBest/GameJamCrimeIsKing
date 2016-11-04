@@ -15,16 +15,19 @@ public class KingController : BaseController
 
     private int currentGuardIndex = 0;
 
+
+
     public override void StartTurn()
     {
         base.StartTurn();
 
-        currentGuardIndex = 0;
+        this.currentGuardIndex = 0;
         this.canMove = false;
         this.Guards = this.Guards.OrderBy(x => x.gameObject.name).ToList();
         foreach (GuardController guardController in this.Guards)
         {
             guardController.KingController = this;
+            guardController.hasArrived = false;
             guardController.StartTurn();
         }
         this.SelectGuard(this.Guards[this.currentGuardIndex]);
@@ -41,7 +44,7 @@ public class KingController : BaseController
 
         var orderedGuards = this.Guards.Where(x => x.CurrentActionPoints > 0).OrderBy(x => x.name).ToList();
 
-        if (this.CurrentSelectedGuard.CurrentActionPoints <= 0 && orderedGuards.Count > 0)
+        if ((this.CurrentSelectedGuard.CurrentActionPoints <= 0 && orderedGuards.Count > 0) && this.CurrentSelectedGuard.hasArrived)
         {
             var guard = orderedGuards.First();
             if (guard != null)
