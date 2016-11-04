@@ -1,5 +1,7 @@
 using Assets.Scripts;
 
+using DG.Tweening;
+
 using UnityEngine;
 
 public class GuardController : BaseController
@@ -13,6 +15,14 @@ public class GuardController : BaseController
     public int ActionPointsLastFrame;
 
     public int Index = 0;
+
+    public bool hasArrived;
+
+    private Point currentMoveEndPoint;
+
+    private int currentMoveActionCost;
+
+    private Vector3[] currentMoveWaypoints;
 
     public override void StartTurn()
     {
@@ -46,10 +56,23 @@ public class GuardController : BaseController
 
     public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
+        this.currentMoveEndPoint = currentPosition;
+        this.currentMoveActionCost = actionPointCost;
+        this.currentMoveWaypoints = waypoints;
+
+        this.hasArrived = false;
         base.MoveTo(currentPosition, actionPointCost, waypoints);
-        this.Guard.transform.position = new Vector3(this.CurrentPosition.X, this.Guard.transform.position.y, this.CurrentPosition.Y);
-        Bootstrap.Instance.Map.Tiles[currentPosition.X, currentPosition.Y].Type = TileType.Guard;
+        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
+        this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f + 0.5f);
+        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
+
+    public void UpdateWalkableTiles()
+    {
+        base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
+        this.hasArrived = true;
+    }
+
 
     public void ContinueTurn()
     {
