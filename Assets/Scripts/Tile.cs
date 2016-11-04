@@ -10,6 +10,8 @@ namespace Assets.Scripts
 
         public GameObject OccupyingObject;
 
+        public GameObject VisionBlocker;
+
         public bool IsDirectionTile = false;
 
         public int HP = 1;
@@ -38,10 +40,11 @@ namespace Assets.Scripts
                 tile.HP = this.HP;
         }
 
-        public Tile(TileType type, GameObject occupyingObject)
+        public Tile(TileType type, GameObject occupyingObject, GameObject visionBlocker)
         {
             this.Type = type;
             this.OccupyingObject = occupyingObject;
+            this.VisionBlocker = visionBlocker;
         }
     }
 }

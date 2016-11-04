@@ -113,10 +113,6 @@ public class KingController : BaseController
         }
     }
 
-    protected override void UpdateVision()
-    {
-    }
-
     private void SelectGuard(GuardController guardController)
     {
         this.CurrentSelectedGuard = guardController;

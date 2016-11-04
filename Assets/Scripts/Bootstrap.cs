@@ -35,6 +35,8 @@ namespace Assets.Scripts
 
         public GameObject Cupboard;
 
+        public GameObject VisionBlocker;
+
         public const int TreasureCount = 10;
 
         public const int TreasureWin = 3;
@@ -62,7 +64,7 @@ namespace Assets.Scripts
         {
             Instance = this;
 
-            this.Map = new Grid(MapFile.text);
+            this.Map = new Grid(MapFile.text, VisionBlocker, Parent);
 
             var weights = this.Map.PossibleTreasureTiles.Select(x => this.GetWeight(x.Type)).ToList();
 

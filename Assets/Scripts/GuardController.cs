@@ -37,6 +37,7 @@ public class GuardController : BaseController
     public void Awake()
     {
         base.Awake();
+
         int index = 0;
         Bootstrap.Instance.Map.Traverse((x, y, tile) =>
         {
@@ -114,10 +115,6 @@ public class GuardController : BaseController
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
         this.hasArrived = true;
-    }
-
-    protected override void UpdateVision()
-    {
     }
 
     public void ContinueTurn()

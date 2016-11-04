@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Assets.Scripts;
 
 using DG.Tweening;
@@ -36,8 +37,15 @@ public class CriminalController : BaseController
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
 
-    protected override void UpdateVision()
+    public void OnDrawGizmosSelected()
     {
+        Gizmos.DrawLine(this.CurrentPosition, this.Guards[0].CurrentPosition);
+        var points = LineToGrid(this.CurrentPosition, this.Guards[0].CurrentPosition);
+
+        foreach (var point in points)
+        {
+            Gizmos.DrawCube(point, new Vector3(1, 1, 1));
+        }
     }
 
     public void UpdateWalkableTiles()
@@ -157,7 +165,7 @@ public class CriminalController : BaseController
         this.CurrentPosition = spawn;
         Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Thief;
         this.CheckAdjacentTiles();
-        
+
         ForceCurrentPosition();
     }
 
