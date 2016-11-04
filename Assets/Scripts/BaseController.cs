@@ -28,6 +28,8 @@ public class BaseController : MonoBehaviour, IController
 
     public GameObject ButtonParent;
 
+    [HideInInspector]
+    public bool HasWon { get; set; }
     private List<GameObject> actionButtons = new List<GameObject>();
     private List<Point> actionButtonsPositions = new List<Point>();
 

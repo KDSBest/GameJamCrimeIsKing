@@ -14,6 +14,8 @@ namespace Assets.Scripts
 
         public Point Size;
 
+        public List<Tile> PossibleTreasureTiles = new List<Tile>(); 
+
         private const char FloorChar = ' ';
         private const char WallChar = '#';
         private const char BedHeadChar = 'B';
@@ -55,6 +57,7 @@ namespace Assets.Scripts
                             break;
                         case BedHeadChar:
                             this.Tiles[x, y].Type = TileType.BedHead;
+                            this.PossibleTreasureTiles.Add(this.Tiles[x, y]);
                             break;
                         case BedFootChar:
                             this.Tiles[x, y].Type = TileType.BedFoot;
@@ -74,6 +77,7 @@ namespace Assets.Scripts
                             break;
                         case CupboardChar:
                             this.Tiles[x, y].Type = TileType.Cupboard;
+                            this.PossibleTreasureTiles.Add(this.Tiles[x, y]);
                             break;
                         case WalkableDirectionChar:
                             this.Tiles[x, y].Type = TileType.Walkable;

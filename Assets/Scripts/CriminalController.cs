@@ -110,6 +110,11 @@ public class CriminalController : BaseController
     {
         this.Treasures++;
         this.TreasureText.text = this.Treasures.ToString();
+
+        if (this.Treasures >= Bootstrap.TreasureWin)
+        {
+            this.HasWon = true;
+        }
     }
 
     public void ProcessAdjacentTile(Point position, Tile tile)

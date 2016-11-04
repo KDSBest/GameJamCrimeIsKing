@@ -104,38 +104,6 @@ namespace Assets.Scripts
                     this.AllowedMoves[fieldEntry.Position.X, fieldEntry.Position.Y] = -1;
                 }
             }
-
-            //for (int y = 0; y < AllowedMovesSize.Y; y++)
-            //{
-            //    for (int x = 0; x < AllowedMovesSize.X; x++)
-            //    {
-            //        Point endPositionInMap = new Point(AllowedMovesOffest.X + x, AllowedMovesOffest.Y + y);
-
-            //        Point endPosition = new Point(x, y);
-            //        Point startPosition = new Point(this.CurrentPosition.X - AllowedMovesOffest.X, this.CurrentPosition.Y - AllowedMovesOffest.Y);
-
-            //        this.AllowedMoves[x, y] = -1;
-
-            //        var astarResult = AStar.Search(startPosition, endPosition, g);
-
-            //        if (astarResult != null)
-            //        {
-            //            int walkLength = 0;
-
-            //            while (astarResult.Parent != null)
-            //            {
-            //                walkLength++;
-            //                astarResult = astarResult.Parent;
-            //            }
-
-            //            if (walkLength <= actionPoints)
-            //            {
-            //                CreateWaypointAllowed(this.WaypointAllowed, endPositionInMap);
-            //                this.AllowedMoves[x, y] = walkLength;
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         public void Select(BaseController baseController)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TurnController : MonoBehaviour
@@ -16,6 +17,10 @@ public class TurnController : MonoBehaviour
     public Button StartTurnButton;
 
     public Turn CurrenTurn;
+
+    public Text WonText;
+
+    public Button WonButton;
 
     public enum Turn
     {
@@ -35,6 +40,13 @@ public class TurnController : MonoBehaviour
         this.StartTurnButton.onClick.RemoveAllListeners();
         this.StartTurnButton.onClick.AddListener(this.StartTurn);
 
+        this.WonButton.onClick.RemoveAllListeners();
+        this.WonButton.onClick.AddListener(() =>
+        {
+            GameObject.Destroy(GameObject.Find("Bootstrap"));
+            SceneManager.LoadScene(0);
+        });
+
         this.BlackOverlay.SetActive(true);
         this.SetText();
         this.CriminalController.StartTurn();
@@ -45,7 +57,7 @@ public class TurnController : MonoBehaviour
         this.BlackOverlay.SetActive(false);
         this.StartTurnButton.gameObject.SetActive(false);
     }
-
+    
     public void EndCurrentTurn()
     {
         this.CurrenTurn = this.CurrenTurn == Turn.King ? Turn.Criminal : Turn.King;
@@ -63,6 +75,24 @@ public class TurnController : MonoBehaviour
                 this.KingController.EndTurn();
                 this.CriminalController.StartTurn();
                 break;
+        }
+    }
+
+    public void Update()
+    {
+        if (CriminalController.HasWon)
+        {
+            this.StartTurnButton.gameObject.SetActive(false);
+            this.BlackOverlay.gameObject.SetActive(true);
+            this.WonText.text = "Thief Wins!";
+            this.WonButton.gameObject.SetActive(true);
+        }
+        else if (this.KingController.HasWon)
+        {
+            this.StartTurnButton.gameObject.SetActive(false);
+            this.BlackOverlay.gameObject.SetActive(true);
+            this.WonText.text = "King Wins!";
+            this.WonButton.gameObject.SetActive(true);
         }
     }
 
