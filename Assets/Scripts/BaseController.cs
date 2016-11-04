@@ -159,7 +159,11 @@ public abstract class BaseController : MonoBehaviour, IController
         this.CheckAdjacentTiles();
         this.UpdateButtonPositions();
         this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
+
+        this.UpdateVision();
     }
+
+    protected abstract void UpdateVision();
 
     protected virtual void CheckAdjacentTiles()
     {

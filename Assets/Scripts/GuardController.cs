@@ -116,6 +116,9 @@ public class GuardController : BaseController
         this.hasArrived = true;
     }
 
+    protected override void UpdateVision()
+    {
+    }
 
     public void ContinueTurn()
     {

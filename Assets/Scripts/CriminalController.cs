@@ -23,6 +23,8 @@ public class CriminalController : BaseController
 
     public Text TreasureText;
 
+    public GuardController[] Guards;
+
     public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
         this.currentMoveEndPoint = currentPosition;
@@ -32,6 +34,10 @@ public class CriminalController : BaseController
         this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
+    }
+
+    protected override void UpdateVision()
+    {
     }
 
     public void UpdateWalkableTiles()
@@ -151,9 +157,8 @@ public class CriminalController : BaseController
         this.CurrentPosition = spawn;
         Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Thief;
         this.CheckAdjacentTiles();
-
+        
         ForceCurrentPosition();
-
     }
 
     private void ExecuteSkill(int id)
