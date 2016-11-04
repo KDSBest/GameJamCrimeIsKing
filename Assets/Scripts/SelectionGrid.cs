@@ -194,7 +194,7 @@ namespace Assets.Scripts
         private void CreateWaypointAllowed(GameObject toClone, Point point)
         {
             GameObject go = GameObject.Instantiate(toClone);
-            go.transform.position = new Vector3(point.X, 0.5f, point.Y);
+            go.transform.position = new Vector3(point.X, 0.05f, point.Y);
             this.WaypointsAllowed.Add(go);
         }
 

@@ -543,7 +543,7 @@ public class Moba_Camera : MonoBehaviour
 
         // Calculate the new position of the camera
         // rotate pivot by the change int camera 
-        Vector3 forwardRotation = Quaternion.AngleAxis(_currentCameraRotation.y, Vector3.up) * Vector3.forward;
+        Vector3 forwardRotation = Quaternion.AngleAxis(_currentCameraRotation.y + 180, Vector3.up) * Vector3.forward;
         requirements.pivot.transform.rotation = Quaternion.LookRotation(forwardRotation);
 
         //requirements.pivot.transform.Rotate(Vector3.up, changeInRotationY);

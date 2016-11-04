@@ -61,8 +61,7 @@ public class GuardController : BaseController
         this.currentMoveWaypoints = waypoints;
 
         this.hasArrived = false;
-        base.MoveTo(currentPosition, actionPointCost, waypoints);
-        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.TopDown2D, 5, Color.cyan);
+        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f + 0.5f);
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
