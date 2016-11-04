@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEditor;
@@ -25,6 +26,7 @@ namespace Assets.Scripts
         private const char WalkableDirectionChar = '~';
 
         private const int CupboardHP = 20;
+
         public Grid(string mapFileContent)
         {
             int mapX = mapFileContent.IndexOfAny(new char[]
@@ -62,6 +64,7 @@ namespace Assets.Scripts
                             break;
                         case DoorChar:
                             this.Tiles[x, y].Type = TileType.Door;
+                            this.Tiles[x, y].WasDoor = true;
                             break;
                         case ThiefChar:
                             this.Tiles[x, y].Type = TileType.Thief;
@@ -179,6 +182,21 @@ namespace Assets.Scripts
             this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(doorPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, doorPosition.y);
             this.Tiles[doorResult.Frames[0].X, doorResult.Frames[0].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
             this.Tiles[doorResult.Frames[1].X, doorResult.Frames[1].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.LinkTiles(this.Tiles[x, y], this.Tiles[doorResult.Frames[0].X, doorResult.Frames[0].Y], this.Tiles[doorResult.Frames[1].X, doorResult.Frames[1].Y]);
+        }
+
+        private void LinkTiles(params Tile[] tiles)
+        {
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                for (int ii = 0; ii < tiles.Length; ii++)
+                {
+                    if(i == ii)
+                        continue;
+
+                    tiles[i].LinkedTiles.Add(tiles[ii]);
+                }
+            }
         }
 
         private void ProcessWall(GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, int x, int y)
@@ -216,6 +234,7 @@ namespace Assets.Scripts
             this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(bedResult.Rotation, Vector3.up);
             this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(bedPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, bedPosition.y);
             this.Tiles[bedResult.FootPosition.X, bedResult.FootPosition.Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.LinkTiles(this.Tiles[x, y], this.Tiles[bedResult.FootPosition.X, bedResult.FootPosition.Y]);
         }
 
         private void ProcessWalkable(GameObject floor, int x, int y)

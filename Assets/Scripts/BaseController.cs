@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 
 using Assets.Scripts;
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class BaseController : MonoBehaviour, IController
@@ -23,6 +25,57 @@ public class BaseController : MonoBehaviour, IController
 
     public bool canMove = true;
 
+    private List<GameObject> actionButtons = new List<GameObject>();
+
+    protected void TryToKillTile(Tile tile)
+    {
+        if (this.CurrentActionPoints >= tile.HP)
+        {
+            this.SpendActionPoints(tile.HP);
+            tile.HP = 0;
+        }
+        else
+        {
+            tile.HP -= this.CurrentActionPoints;
+            this.SpendActionPoints(this.CurrentActionPoints);
+        }
+    }
+
+    protected void SpawnButton(GameObject buttonGo, Canvas canvas, Point position, Tile tile, UnityAction buttonAction, string text)
+    {
+        this.actionButtons.Add(GameObject.Instantiate(buttonGo));
+        this.actionButtons[this.actionButtons.Count - 1].transform.SetParent(canvas.transform);
+        this.actionButtons[this.actionButtons.Count - 1].transform.position = Camera.main.WorldToScreenPoint(new Vector3(position.X, 0, position.Y));
+        var button = this.actionButtons[this.actionButtons.Count - 1].GetComponent<Button>();
+        button.onClick.AddListener(new UnityAction(() =>
+        {
+            TryToKillTile(tile);
+            if (tile.HP == 0)
+            {
+                buttonAction();
+            }
+        }));
+        button.GetComponentInChildren<Text>().text = text;
+    }
+
+
+    public bool IsValidTilePosition(int x, int y)
+    {
+        if (x < 0)
+            return false;
+
+        if (y < 0)
+            return false;
+
+        if (x >= Bootstrap.Instance.Map.Size.X)
+            return false;
+
+        if (y >= Bootstrap.Instance.Map.Size.Y)
+            return false;
+
+        return true;
+    }
+
     public virtual void StartTurn()
     {
         Debug.Log("start turn: " + this.GetType().Name);
@@ -42,6 +95,7 @@ public class BaseController : MonoBehaviour, IController
     {
         Debug.Log("end turn: " + this.GetType().Name);
         this.HasTurnToken = false;
+        this.RemoveUIButtonsForActions();
     }
 
     public void Awake()
@@ -66,9 +120,29 @@ public class BaseController : MonoBehaviour, IController
 
     public virtual void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
+        Bootstrap.Instance.Map.Tiles[this.CurrentPosition.X, this.CurrentPosition.Y].Type = TileType.Walkable;
         this.CurrentPosition = currentPosition;
         this.SpendActionPoints(actionPointCost);
+        this.UpdateUIElements();
+    }
+
+    protected void UpdateUIElements()
+    {
+        this.CheckAdjacentTiles();
         this.SelectionGrid.CalculatePossibleTurns(this);
+    }
+
+    protected virtual void CheckAdjacentTiles()
+    {
+        RemoveUIButtonsForActions();
+    }
+
+    protected void RemoveUIButtonsForActions()
+    {
+        foreach (var go in actionButtons)
+            GameObject.Destroy(go);
+
+        this.actionButtons.Clear();
     }
 
     private void SetActionPointsText()
