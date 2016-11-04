@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -17,6 +19,10 @@ namespace Assets.Scripts
             Instance = this;
 
             this.Map = new Grid(new Point(MapX, MapY));
+
+            DontDestroyOnLoad(this.gameObject);
+
+            SceneManager.LoadScene("test");
         }
     }
 }

@@ -16,6 +16,11 @@ public class CriminalController : BaseController
         this.Criminal.transform.position = new Vector3(this.CurrentPosition.X, this.Criminal.transform.position.y, this.CurrentPosition.Y);
     }
 
+    private void CheckAdjacentSquares()
+    {
+
+    }
+
     public void Update()
     {
         if (!this.HasTurnToken)
