@@ -128,6 +128,7 @@ namespace Assets.Scripts
                         case CupboardChar:
                         case TresorChar:
                         case CouchChar:
+                        case CouchTableChar:
                         case CrateChar:
                         case Crate1Char:
                         case Crate2Char:

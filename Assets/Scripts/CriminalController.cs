@@ -141,6 +141,8 @@ public class CriminalController : BaseController
             case TileType.Crate1:
             case TileType.Crate2:
             case TileType.Couch:
+            case TileType.CouchCorner:
+            case TileType.CouchTable:
             case TileType.Vase:
             case TileType.Seat:
                 if (tileCopyIntoClosure.HP > 0 || tileCopyIntoClosure.HasTreasure)
