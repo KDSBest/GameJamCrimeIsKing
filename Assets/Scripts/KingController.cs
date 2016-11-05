@@ -32,7 +32,7 @@ public class KingController : BaseController
         base.StartTurn();
 
         this.currentGuardIndex = 0;
-        this.canMove = false;
+        this.CanMove = false;
         this.Guards = this.Guards.OrderBy(x => x.gameObject.name).ToList();
         foreach (GuardController guardController in this.Guards)
         {

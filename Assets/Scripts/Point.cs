@@ -59,5 +59,10 @@ namespace Assets.Scripts
         {
             return new Vector3(p.X, 0, p.Y);
         }
+
+        public override string ToString()
+        {
+            return this.X + ", " + this.Y;
+        }
     }
 }
