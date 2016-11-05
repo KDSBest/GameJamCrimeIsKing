@@ -76,7 +76,7 @@ namespace Assets.Scripts
     };
 
 
-        private const int LockerHighHp = 15;
+        private const int LockerHighHp = 8;
 
         private GameObject GetVisionBlocker(GameObject visionBlocker, GameObject parent, int x, int y)
         {
