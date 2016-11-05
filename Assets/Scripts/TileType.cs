@@ -14,6 +14,8 @@ public enum TileType
 
     Cupboard,
 
+    LockerHigh,
+
     Couch,
 
     CouchCorner,
@@ -26,5 +28,15 @@ public enum TileType
 
     Crate1,
 
-    Crate2
+    Crate2,
+
+    Vase,
+
+    Desk,
+
+    Seat,
+
+    Tresor,
+
+    DeskNeighbour
 }

@@ -4,6 +4,6 @@ namespace Assets.Scripts
     {
         public int Rotation;
 
-        public Point[] Frames = new Point[2];
+        public Point[] Neighbours = new Point[2];
     }
 }

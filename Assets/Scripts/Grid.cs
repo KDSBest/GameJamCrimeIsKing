@@ -33,7 +33,7 @@ namespace Assets.Scripts
         private const char DoorFrameChar = 'd';
         private const char ThiefChar = 'T';
         private const char GuardChar = 'G';
-        private const char CupboardChar = 'S';
+        private const char LockerHighChar = 'S';
         private const char WalkableDirectionChar = '~';
         private const char CouchChar = 'C';
         private const char CouchCornerChar = 'c';
@@ -42,6 +42,13 @@ namespace Assets.Scripts
         private const char CrateChar = 'R';
         private const char Crate1Char = '1';
         private const char Crate2Char = '2';
+
+        private const char DeskChar = 'E';
+        private const char DeskNeighbourChar = 'e';
+        private const char CupboardChar = 'F';
+        private const char SeatChar = 'H';
+        private const char TresorChar = 'I';
+        private const char VaseChar = 'V';
 
         private Dictionary<char, TileType> Mapping = new Dictionary<char, TileType>()
                                                      {
@@ -53,19 +60,25 @@ namespace Assets.Scripts
         { DoorFrameChar,TileType.DoorFrame},
         { ThiefChar,TileType.Walkable},
         { GuardChar,TileType.Walkable},
-        { CupboardChar, TileType.Cupboard},
+        { LockerHighChar, TileType.Cupboard},
         { WalkableDirectionChar,TileType.Walkable},
         { CouchChar,TileType.Couch},
         { CouchCornerChar,TileType.CouchCorner},
         { CouchTableChar,TileType.CouchTable},
         { ChairChar,TileType.Chair},
             {CrateChar, TileType.Crate },
-            {CrateChar, TileType.Crate1 },
-            {CrateChar, TileType.Crate2 }
+            {Crate1Char, TileType.Crate1 },
+            {Crate2Char, TileType.Crate2 },
+        { DeskChar,TileType.Desk},
+        { DeskNeighbourChar,TileType.DeskNeighbour},
+        { CupboardChar,TileType.Cupboard},
+            {SeatChar, TileType.Seat},
+            {TresorChar, TileType.Tresor},
+            {VaseChar, TileType.Vase }
     };
 
 
-        private const int CupboardHP = 15;
+        private const int LockerHighHp = 15;
 
         private GameObject GetVisionBlocker(GameObject visionBlocker, GameObject parent, int x, int y)
         {
@@ -113,7 +126,7 @@ namespace Assets.Scripts
                         case GuardChar:
                             this.PossibleGuardSpawns.Add(new Point(x, y));
                             break;
-                        case CupboardChar:
+                        case LockerHighChar:
                             this.PossibleTreasureTiles.Add(this.Tiles[x, y]);
                             break;
                         case WalkableDirectionChar:
@@ -139,7 +152,7 @@ namespace Assets.Scripts
             this.Tiles = tiles;
         }
 
-        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door, GameObject cupboard, GameObject couch, GameObject couchTable, GameObject chair, GameObject crate, GameObject crate1, GameObject crate2)
+        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door, GameObject lockerHigh, GameObject couch, GameObject couchTable, GameObject chair, GameObject crate, GameObject crate1, GameObject crate2, GameObject desk, GameObject cupboard, GameObject seat, GameObject tresor, GameObject vase)
         {
             for (int x = 0; x < this.Size.X; x++)
             {
@@ -178,8 +191,8 @@ namespace Assets.Scripts
                         case TileType.Chair:
                             this.ProcessOrientedTilde(chair, x, y);
                             break;
-                        case TileType.Cupboard:
-                            this.ProcessOrientedTilde(cupboard, x, y, CupboardHP);
+                        case TileType.LockerHigh:
+                            this.ProcessOrientedTilde(lockerHigh, x, y, LockerHighHp);
                             break;
                         case TileType.Crate:
                             this.ProcessOrientedTilde(crate, x, y);
@@ -190,6 +203,22 @@ namespace Assets.Scripts
                         case TileType.Crate2:
                             this.ProcessOrientationless(crate2, x, y);
                             break;
+                        case TileType.Desk:
+                            this.ProcessLine2Object(desk, x, y, TileType.DeskNeighbour);
+                            break;
+                        case TileType.Cupboard:
+                            this.ProcessOrientedTilde(cupboard, x, y);
+                            break;
+                        case TileType.Seat:
+                            this.ProcessOrientedTilde(seat, x, y);
+                            break;
+                        case TileType.Tresor:
+                            this.ProcessOrientedTilde(tresor, x, y);
+                            break;
+                        case TileType.Vase:
+                            this.ProcessOrientationless(vase, x, y);
+                            break;
+                        case TileType.DeskNeighbour:
                         case TileType.BedFoot:
                         case TileType.DoorFrame:
                             break;
@@ -226,21 +255,36 @@ namespace Assets.Scripts
             this.Tiles[x, y].HP = hp;
         }
 
-        private void ProcessLine3Object(GameObject objToInstantiate, int x, int y, TileType corner)
+        private void ProcessLine2Object(GameObject objToInstantiate, int x, int y, TileType corner)
         {
-            var doorResult = this.CalculatePlacement3Line(x, y, corner);
+            var lineResult = this.CalculatePlacement2Line(x, y, corner);
 
             this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(objToInstantiate);
             Vector2 doorPosition = new Vector2(x, y);
-            doorPosition += (Vector2)doorResult.Frames[0];
-            doorPosition += (Vector2)doorResult.Frames[1];
+            doorPosition += (Vector2)lineResult.Neighbours[0];
+            doorPosition /= 2;
+
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(lineResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(doorPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, doorPosition.y);
+            this.Tiles[lineResult.Neighbours[0].X, lineResult.Neighbours[0].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.LinkTiles(this.Tiles[x, y], this.Tiles[lineResult.Neighbours[0].X, lineResult.Neighbours[0].Y]);
+        }
+
+        private void ProcessLine3Object(GameObject objToInstantiate, int x, int y, TileType corner)
+        {
+            var lineResult = this.CalculatePlacement3Line(x, y, corner);
+
+            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(objToInstantiate);
+            Vector2 doorPosition = new Vector2(x, y);
+            doorPosition += (Vector2)lineResult.Neighbours[0];
+            doorPosition += (Vector2)lineResult.Neighbours[1];
             doorPosition /= 3;
 
-            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(doorResult.Rotation, Vector3.up);
+            this.Tiles[x, y].OccupyingObject.transform.rotation = Quaternion.AngleAxis(lineResult.Rotation, Vector3.up);
             this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(doorPosition.x, this.Tiles[x, y].OccupyingObject.transform.position.y, doorPosition.y);
-            this.Tiles[doorResult.Frames[0].X, doorResult.Frames[0].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
-            this.Tiles[doorResult.Frames[1].X, doorResult.Frames[1].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
-            this.LinkTiles(this.Tiles[x, y], this.Tiles[doorResult.Frames[0].X, doorResult.Frames[0].Y], this.Tiles[doorResult.Frames[1].X, doorResult.Frames[1].Y]);
+            this.Tiles[lineResult.Neighbours[0].X, lineResult.Neighbours[0].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.Tiles[lineResult.Neighbours[1].X, lineResult.Neighbours[1].Y].OccupyingObject = this.Tiles[x, y].OccupyingObject;
+            this.LinkTiles(this.Tiles[x, y], this.Tiles[lineResult.Neighbours[0].X, lineResult.Neighbours[0].Y], this.Tiles[lineResult.Neighbours[1].X, lineResult.Neighbours[1].Y]);
         }
 
         private void LinkTiles(params Tile[] tiles)
@@ -353,34 +397,34 @@ namespace Assets.Scripts
             {
                 left = this.Tiles[x - 1, y].IsDirectionTile;
                 if (left)
-                    return -90;
+                    return 0;
             }
 
             if (y - 1 >= 0)
             {
                 down = this.Tiles[x, y - 1].IsDirectionTile;
                 if (down)
-                    return 180;
+                    return -90;
             }
 
             if (x + 1 < this.Size.X)
             {
                 right = this.Tiles[x + 1, y].IsDirectionTile;
                 if (right)
-                    return 90;
+                    return 180;
             }
 
             if (y + 1 < this.Size.Y)
             {
                 up = this.Tiles[x, y + 1].IsDirectionTile;
                 if (up)
-                    return 0;
+                    return 90;
             }
 
             return 0;
         }
 
-        private Placement3LineResult CalculatePlacement3Line(int x, int y, TileType corner)
+        private Placement3LineResult CalculatePlacement2Line(int x, int y, TileType corner)
         {
             bool up = false;
             bool down = false;
@@ -407,25 +451,98 @@ namespace Assets.Scripts
                 up = this.Tiles[x, y + 1].Type == corner;
             }
 
-            if (up && down)
+            if (up)
                 return new Placement3LineResult()
                 {
-                    Frames = new Point[]
+                    Neighbours = new Point[]
                                     {
-                                        new Point(x, y - 1),
                                         new Point(x, y + 1)
                                     },
                     Rotation = 0
                 };
 
+            if (right)
+                return new Placement3LineResult()
+                {
+                    Neighbours = new Point[]
+                                    {
+                                        new Point(x + 1, y)
+                                    },
+                    Rotation = 90
+                };
+
+
+            if (down)
+                return new Placement3LineResult()
+                {
+                    Neighbours = new Point[]
+                                    {
+                                        new Point(x, y - 1)
+                                    },
+                    Rotation = 180
+                };
+
             return new Placement3LineResult()
             {
-                Frames = new Point[]
+                Neighbours = new Point[]
+                                {
+                                        new Point(x - 1, y)
+                                },
+                Rotation = -90
+            };
+        }
+
+        private Placement3LineResult CalculatePlacement3Line(int x, int y, TileType corner)
+        {
+            bool up = false;
+            bool down = false;
+            bool left = false;
+            bool right = false;
+            bool tildeDown = false;
+
+            bool tildeRight = false;
+
+            if (x - 1 >= 0)
+            {
+                left = this.Tiles[x - 1, y].Type == corner;
+            }
+
+            if (y - 1 >= 0)
+            {
+                down = this.Tiles[x, y - 1].Type == corner;
+                tildeDown = this.Tiles[x, y - 1].IsDirectionTile;
+            }
+
+            if (x + 1 < this.Size.X)
+            {
+                right = this.Tiles[x + 1, y].Type == corner;
+                tildeRight = this.Tiles[x + 1, y].IsDirectionTile;
+            }
+
+            if (y + 1 < this.Size.Y)
+            {
+                up = this.Tiles[x, y + 1].Type == corner;
+            }
+
+            if (up && down)
+                return new Placement3LineResult()
+                {
+                    Neighbours = new Point[]
+                                    {
+                                        new Point(x, y - 1),
+                                        new Point(x, y + 1)
+                                    },
+                    Rotation = tildeRight ? 0 : 180
+                };
+
+            return new Placement3LineResult()
+            {
+                Neighbours = new Point[]
                                 {
                                         new Point(x - 1, y),
                                         new Point(x + 1, y)
                                 },
-                Rotation = 90
+                Rotation = tildeDown ? 90 : -90
             };
         }
 

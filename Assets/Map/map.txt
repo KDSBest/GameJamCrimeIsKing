@@ -1,13 +1,13 @@
 ##########################################################################################
 #       BBBBB                          #   cCc                                           #
-#       bbbbb                          #                                T                #
-#                                      #    O                                            #
-#       T                              #    ~                                            #
-#                                      #    K            bb           G                  #
-#                         BB           #                 BB                              #
+#       bbbbb                          #    ~                           T               V#
+#                                      #    O                                           V#
+#       T                              #    ~                                          ~I#
+#                                      #    K            bb           G                ~H#
+#                         BB           #                 BB                            ~F#
 #                       BbbbbB         #                bBBb                             #
-#         G             BbbbbB         d                bBBb                             #
-#                         BB           D                 BB           G                  #
+#         G             BbbbbB         d                bBBb                            E#
+#                         BB           D                 BB           G                 e#
 #                                      d                 bb                              #
 #                                      #                S                               1#
 #                                      #                ~                               2#
