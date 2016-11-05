@@ -12,5 +12,19 @@ public enum TileType
 
     Guard,
 
-    Cupboard
+    Cupboard,
+
+    Couch,
+
+    CouchCorner,
+
+    CouchTable,
+
+    Chair,
+
+    Crate,
+
+    Crate1,
+
+    Crate2
 }
