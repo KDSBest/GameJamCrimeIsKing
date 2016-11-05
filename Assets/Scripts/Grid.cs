@@ -458,7 +458,7 @@ namespace Assets.Scripts
                                     {
                                         new Point(x, y + 1)
                                     },
-                    Rotation = 0
+                    Rotation = 180
                 };
 
             if (right)
@@ -468,7 +468,7 @@ namespace Assets.Scripts
                                     {
                                         new Point(x + 1, y)
                                     },
-                    Rotation = 90
+                    Rotation = -90
                 };
 
 
@@ -479,7 +479,7 @@ namespace Assets.Scripts
                                     {
                                         new Point(x, y - 1)
                                     },
-                    Rotation = 180
+                    Rotation = 0
                 };
 
             return new Placement3LineResult()
@@ -488,7 +488,7 @@ namespace Assets.Scripts
                                 {
                                         new Point(x - 1, y)
                                 },
-                Rotation = -90
+                Rotation = 90
             };
         }
 

@@ -6,8 +6,8 @@
 #                                      #    K            bb           G                ~H#
 #                         BB           #                 BB                            ~F#
 #                       BbbbbB         #                bBBb                             #
-#         G             BbbbbB         d                bBBb                c   c      eE#
-#                         BB           D                 BB           G     C~ ~C        #
+#         G             BbbbbB         d                bBBb                c   c       E#
+#                         BB           D                 BB           G     C~ ~C       e#
 #                                      d                 bb                 c   c        #
 #                                      #                S                               1#
 #                                      #                ~                               2#
