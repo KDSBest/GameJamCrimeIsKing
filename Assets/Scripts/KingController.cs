@@ -64,11 +64,12 @@ public class KingController : BaseController
 
         this.HasWon = this.Guards.Any(x => x.HasWon);
 
-        var orderedGuards = this.Guards.Where(x => x.CurrentActionPoints > 0).OrderBy(x => x.name).ToList();
+        var orderedGuards = this.Guards.OrderBy(x => x.name).ToList();
 
         if ((this.CurrentSelectedGuard.CurrentActionPoints <= 0 && orderedGuards.Count > 0) && this.CurrentSelectedGuard.hasArrived)
         {
-            var guard = orderedGuards.First();
+            this.CurrentSelectedGuard.hasArrived = false;
+            var guard = orderedGuards.FirstOrDefault(x => x.CurrentActionPoints > 0);
             if (guard != null)
                 this.SelectGuard(guard);
         }
