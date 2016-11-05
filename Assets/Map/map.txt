@@ -1,19 +1,19 @@
 ##########################################################################################
-#       BBBBB                          #   cCc                                           #
-#       bbbbb                          #    ~                           T               V#
+#       BBBBB                          #   cCc                            cCc Ee         #
+#       bbbbb                          #    ~                           T  ~            V#
 #                                      #    O                                           V#
 #       T                              #    ~                                          ~I#
 #                                      #    K            bb           G                ~H#
 #                         BB           #                 BB                            ~F#
 #                       BbbbbB         #                bBBb                             #
-#         G             BbbbbB         d                bBBb                            E#
-#                         BB           D                 BB           G                 e#
-#                                      d                 bb                              #
+#         G             BbbbbB         d                bBBb                c   c       E#
+#                         BB           D                 BB           G     C~ ~C       e#
+#                                      d                 bb                 c   c        #
 #                                      #                S                               1#
 #                                      #                ~                               2#
 #                                      #              S~ ~S                            ~R#
-#   ~      ~ ~                         #~~~             ~                                #
-#   S      S S                         #SSS             S                              ~S#
+#   ~      ~ ~                         #~~~             ~                   ~            #
+#   S      S S                         #SSS             S                  cCc  eE     ~S#
 ###################dDd############################################dDd#####################
 #             #                        #         #                                     ~S#
 #       Bb    #             bB         #         #                                       #

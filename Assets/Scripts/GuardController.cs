@@ -90,6 +90,7 @@ public class GuardController : BaseController
                     {
                         tileCopyIntoClosure.Type = TileType.Door;
                         tileCopyIntoClosure.HP = 1;
+                        tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Close();
                     }, "Close Door");
                 }
                 break;
@@ -98,6 +99,7 @@ public class GuardController : BaseController
                 {
                     tileCopyIntoClosure.Type = TileType.Walkable;
                     tileCopyIntoClosure.HP = 1;
+                    tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Open();
                 }, "Open Door");
                 break;
             case TileType.Thief:

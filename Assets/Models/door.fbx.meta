@@ -1,32 +1,20 @@
 fileFormatVersion: 2
-guid: a43ac09e7134b41049e9b0f9f510f070
-timeCreated: 1478341958
-licenseType: Free
+guid: 3604572fc6bb4a143babd22e20964cb7
+timeCreated: 1478357226
+licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: pillow_1
-    100004: pillow_2
-    100006: pillow_3
-    400000: //RootNode
-    400002: pillow_1
-    400004: pillow_2
-    400006: pillow_3
-    2300000: //RootNode
-    2300002: pillow_1
-    2300004: pillow_2
-    2300006: pillow_3
-    3300000: //RootNode
-    3300002: pillow_1
-    3300004: pillow_2
-    3300006: pillow_3
-    4300000: couch
-    4300002: pillow_3
-    4300004: pillow_2
-    4300006: pillow_1
-    4300008: couch_1
-    7400000: C4D Animation Take
+    100000: door
+    100002: //RootNode
+    400000: door
+    400002: //RootNode
+    2300000: door
+    2300002: //RootNode
+    3300000: door
+    3300002: //RootNode
+    4300000: wall_door_frame
+    4300002: door
     9500000: //RootNode
   materials:
     importMaterials: 1

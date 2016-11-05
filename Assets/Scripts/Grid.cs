@@ -152,7 +152,7 @@ namespace Assets.Scripts
             this.Tiles = tiles;
         }
 
-        public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door, GameObject lockerHigh, GameObject couch, GameObject couchTable, GameObject chair, GameObject crate, GameObject crate1, GameObject crate2, GameObject desk, GameObject cupboard, GameObject seat, GameObject tresor, GameObject vase)
+        public void GeneratedMapVisibles(GameObject parent, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door, GameObject lockerHigh, GameObject couch, GameObject couchTable, GameObject chair, GameObject crate, GameObject crate1, GameObject crate2, GameObject desk, GameObject cupboard, GameObject seat, GameObject tresor, GameObject vase)
         {
             for (int x = 0; x < this.Size.X; x++)
             {
@@ -167,8 +167,6 @@ namespace Assets.Scripts
             {
                 for (int y = 0; y < this.Size.Y; y++)
                 {
-                    ProcessWalkable(floor, x, y);
-
                     switch (this.Tiles[x, y].Type)
                     {
                         case TileType.Walkable:
@@ -339,12 +337,6 @@ namespace Assets.Scripts
             this.LinkTiles(this.Tiles[x, y], this.Tiles[bedResult.FootPosition.X, bedResult.FootPosition.Y]);
         }
 
-        private void ProcessWalkable(GameObject floor, int x, int y)
-        {
-            this.Tiles[x, y].OccupyingObject = GameObject.Instantiate(floor);
-            this.Tiles[x, y].OccupyingObject.transform.position = new Vector3(x, 0, y);
-        }
-
         private BedTypeResult CalculateBedType(int x, int y)
         {
             bool up = false;
@@ -458,7 +450,7 @@ namespace Assets.Scripts
                                     {
                                         new Point(x, y + 1)
                                     },
-                    Rotation = 0
+                    Rotation = 180
                 };
 
             if (right)
@@ -468,7 +460,7 @@ namespace Assets.Scripts
                                     {
                                         new Point(x + 1, y)
                                     },
-                    Rotation = 90
+                    Rotation = -90
                 };
 
 
@@ -479,7 +471,7 @@ namespace Assets.Scripts
                                     {
                                         new Point(x, y - 1)
                                     },
-                    Rotation = 180
+                    Rotation = 0
                 };
 
             return new Placement3LineResult()
@@ -488,7 +480,7 @@ namespace Assets.Scripts
                                 {
                                         new Point(x - 1, y)
                                 },
-                Rotation = -90
+                Rotation = 90
             };
         }
 
@@ -532,7 +524,7 @@ namespace Assets.Scripts
                                         new Point(x, y - 1),
                                         new Point(x, y + 1)
                                     },
-                    Rotation = tildeRight ? 0 : 180
+                    Rotation = tildeRight ? 180 : 0
                 };
 
             return new Placement3LineResult()
@@ -542,7 +534,7 @@ namespace Assets.Scripts
                                         new Point(x - 1, y),
                                         new Point(x + 1, y)
                                 },
-                Rotation = tildeDown ? 90 : -90
+                Rotation = tildeDown ? -90 : 90
             };
         }
 
