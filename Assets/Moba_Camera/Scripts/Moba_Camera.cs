@@ -66,7 +66,7 @@ public class Moba_Camera_Requirements
 public class Moba_Camera_KeyCodes
 {
     // Allows camera to be rotated while pressed
-    public KeyCode RotateCamera = KeyCode.Mouse2;
+    public KeyCode RotateCamera = KeyCode.Mouse1;
 
     // Toggle lock camera to lockTargetTransform position
     public KeyCode LockCamera = KeyCode.L;
