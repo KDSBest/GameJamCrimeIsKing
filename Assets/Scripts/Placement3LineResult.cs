@@ -1,6 +1,6 @@
 namespace Assets.Scripts
 {
-    public class DoorTypeResult
+    public class Placement3LineResult
     {
         public int Rotation;
 

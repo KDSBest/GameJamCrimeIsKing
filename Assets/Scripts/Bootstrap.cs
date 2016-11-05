@@ -37,6 +37,18 @@ namespace Assets.Scripts
 
         public GameObject VisionBlocker;
 
+        public GameObject CouchTable;
+
+        public GameObject Chair;
+
+        public GameObject Couch;
+
+        public GameObject Crate;
+
+        public GameObject Crate1;
+
+        public GameObject Crate2;
+
         public const int TreasureCount = 10;
 
         public const int TreasureWin = 4;
@@ -81,7 +93,7 @@ namespace Assets.Scripts
                 }
             }
 
-            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, Cupboard);
+            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, Cupboard, this.Couch, this.CouchTable, this.Chair, this.Crate, this.Crate1, this.Crate2);
 
             FloorGrid.transform.localScale = new Vector3(this.Map.Size.X, 1, this.Map.Size.Y);
             this.FloorGrid.transform.position = new Vector3(this.Map.Size.X / 2, 0, this.Map.Size.Y / 2);
