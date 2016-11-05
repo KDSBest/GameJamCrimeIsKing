@@ -103,10 +103,10 @@ namespace Assets.Scripts
                 }
             }
 
-            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, this.LockerHigh, this.Couch, this.CouchTable, this.Chair, this.Crate, this.Crate1, this.Crate2, this.Desk, this.Cupboard, this.Seat, this.Tresor, this.Vase);
-
-            FloorGrid.transform.localScale = new Vector3(this.Map.Size.X, 1, this.Map.Size.Y);
+            FloorGrid.transform.localScale = new Vector3(this.Map.Size.X, this.Map.Size.Y, 1);
             this.FloorGrid.transform.position = new Vector3(this.Map.Size.X / 2, 0, this.Map.Size.Y / 2);
+
+            this.Map.GeneratedMapVisibles(Parent, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, this.LockerHigh, this.Couch, this.CouchTable, this.Chair, this.Crate, this.Crate1, this.Crate2, this.Desk, this.Cupboard, this.Seat, this.Tresor, this.Vase);
 
             DontDestroyOnLoad(this.gameObject);
 
