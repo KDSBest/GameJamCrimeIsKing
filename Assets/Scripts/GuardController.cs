@@ -91,7 +91,7 @@ public class GuardController : BaseController
                         tileCopyIntoClosure.Type = TileType.Door;
                         tileCopyIntoClosure.HP = 1;
                         tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Close();
-                    }, "Close Door");
+                    }, "Close Door", 0);
                 }
                 break;
             case TileType.Door:
@@ -100,13 +100,13 @@ public class GuardController : BaseController
                     tileCopyIntoClosure.Type = TileType.Walkable;
                     tileCopyIntoClosure.HP = 1;
                     tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Open();
-                }, "Open Door");
+                }, "Open Door", 0);
                 break;
             case TileType.Thief:
                 SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                 {
                     this.HasWon = true;
-                }, "Catch");
+                }, "Catch", 0);
                 break;
         }
     }

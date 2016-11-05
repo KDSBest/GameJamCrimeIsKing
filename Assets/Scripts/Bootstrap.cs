@@ -59,8 +59,6 @@ namespace Assets.Scripts
 
         public GameObject Vase;
 
-        public const int TreasureCount = 20;
-
         public const int TreasureWin = 4;
 
         public const int WeightLockerHigh = 10;
@@ -91,7 +89,7 @@ namespace Assets.Scripts
 
             int currentTreasures = 0;
 
-            while (currentTreasures < TreasureCount)
+            while (currentTreasures < this.Map.PossibleTreasureTiles.Count / 3)
             {
                 var possibleTreasure = RandomHelper.RandomSelectGewichtung(this.Map.PossibleTreasureTiles, weights);
 

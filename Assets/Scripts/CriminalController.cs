@@ -121,7 +121,7 @@ public class CriminalController : BaseController
                                                                                               tileCopyIntoClosure.Type = TileType.Door;
                                                                                               tileCopyIntoClosure.HP = 1;
                                                                                               tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Close();
-                                                                                          }, "Close Door (" + tileCopyIntoClosure.HP + ")");
+                                                                                          }, "Close Door", tileCopyIntoClosure.HP);
                 }
                 break;
             case TileType.Door:
@@ -130,7 +130,7 @@ public class CriminalController : BaseController
                                                                                           tileCopyIntoClosure.Type = TileType.Walkable;
                                                                                           tileCopyIntoClosure.HP = 1;
                                                                                           tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Open();
-                                                                                      }, "Open Door (" + tileCopyIntoClosure.HP + ")");
+                                                                                      }, "Open Door", tileCopyIntoClosure.HP);
                 break;
             case TileType.BedHead:
             case TileType.BedFoot:
@@ -159,7 +159,7 @@ public class CriminalController : BaseController
                                                                                               {
                                                                                                   Debug.Log("Nothing found!");
                                                                                               }
-                                                                                          }, "Search (" + tileCopyIntoClosure.HP + ")");
+                                                                                          }, "Search", tileCopyIntoClosure.HP);
                 }
                 break;
         }

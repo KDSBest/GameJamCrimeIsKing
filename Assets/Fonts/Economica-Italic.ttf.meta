@@ -1,19 +1,16 @@
 fileFormatVersion: 2
-guid: bfddf0339435f46949a7043f6f143cb8
-timeCreated: 1478363786
-licenseType: Free
+guid: 090c6f6e8d3518642b45fc684fc93106
+timeCreated: 1478363939
+licenseType: Pro
 TrueTypeFontImporter:
-  serializedVersion: 4
+  serializedVersion: 3
   fontSize: 16
   forceTextureCase: -2
-  characterSpacing: 0
-  characterPadding: 1
+  characterSpacing: 1
+  characterPadding: 0
   includeFontData: 1
-  fontNames:
-  - Economica
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: a6de4df830d194cc8a0c414c99f3202e, type: 3}
-  - {fileID: 12800000, guid: 4f66787bf40e84787a2c4aaf0dd6036a, type: 3}
+  fontNames: []
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using UnityEditor;
-
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -554,22 +552,22 @@ namespace Assets.Scripts
 
             if (x - 1 >= 0)
             {
-                left = this.Tiles[x - 1, y].Type == TileType.Wall;
+                left = this.Tiles[x - 1, y].Type == TileType.Wall || this.Tiles[x - 1, y].Type == TileType.DoorFrame;
             }
 
             if (y - 1 >= 0)
             {
-                down = this.Tiles[x, y - 1].Type == TileType.Wall;
+                down = this.Tiles[x, y - 1].Type == TileType.Wall || this.Tiles[x, y - 1].Type == TileType.DoorFrame;
             }
 
             if (x + 1 < this.Size.X)
             {
-                right = this.Tiles[x + 1, y].Type == TileType.Wall;
+                right = this.Tiles[x + 1, y].Type == TileType.Wall || this.Tiles[x + 1, y].Type == TileType.DoorFrame;
             }
 
             if (y + 1 < this.Size.Y)
             {
-                up = this.Tiles[x, y + 1].Type == TileType.Wall;
+                up = this.Tiles[x, y + 1].Type == TileType.Wall || this.Tiles[x, y + 1].Type == TileType.DoorFrame;
             }
 
             if (up && down && left && right)
