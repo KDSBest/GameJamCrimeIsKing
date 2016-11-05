@@ -118,6 +118,7 @@ public class CriminalController : BaseController
                                                                                           {
                                                                                               tileCopyIntoClosure.Type = TileType.Door;
                                                                                               tileCopyIntoClosure.HP = 1;
+                                                                                              tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Close();
                                                                                           }, "Close Door (" + tileCopyIntoClosure.HP + ")");
                 }
                 break;
@@ -126,6 +127,7 @@ public class CriminalController : BaseController
                                                                                       {
                                                                                           tileCopyIntoClosure.Type = TileType.Walkable;
                                                                                           tileCopyIntoClosure.HP = 1;
+                                                                                          tileCopyIntoClosure.OccupyingObject.GetComponent<DoorOpener>().Open();
                                                                                       }, "Open Door (" + tileCopyIntoClosure.HP + ")");
                 break;
             case TileType.BedHead:
