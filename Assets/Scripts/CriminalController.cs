@@ -23,6 +23,8 @@ public class CriminalController : BaseController
 
     public ParticleSystem TreasureParticle;
 
+    public GameObject[] CrownPieces;
+
     private Point currentMoveEndPoint;
 
     private int currentMoveActionCost;
@@ -50,6 +52,11 @@ public class CriminalController : BaseController
     public void Start()
     {
         this.TreasureParticle.gameObject.SetActive(false);
+
+        foreach (GameObject piece in this.CrownPieces)
+        {
+            piece.SetActive(false);
+        }
     }
 
     public void UpdateWalkableTiles()
@@ -196,6 +203,8 @@ public class CriminalController : BaseController
     {
         this.TreasureParticle.gameObject.SetActive(false);
         this.TreasureParticle.gameObject.SetActive(true);
+
+        this.CrownPieces[this.Treasures - 1].SetActive(true);
     }
 
     private void ExecuteSkill(int id)
