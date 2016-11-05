@@ -60,7 +60,7 @@ namespace Assets.Scripts
         { DoorFrameChar,TileType.DoorFrame},
         { ThiefChar,TileType.Walkable},
         { GuardChar,TileType.Walkable},
-        { LockerHighChar, TileType.Cupboard},
+        { LockerHighChar, TileType.LockerHigh},
         { WalkableDirectionChar,TileType.Walkable},
         { CouchChar,TileType.Couch},
         { CouchCornerChar,TileType.CouchCorner},
