@@ -3,6 +3,8 @@ using System.Linq;
 
 using Assets.Scripts;
 
+using DG.Tweening;
+
 using UnityEngine;
 
 public class KingController : BaseController
@@ -16,6 +18,18 @@ public class KingController : BaseController
     public Moba_Camera mobaCam;
 
     private int currentGuardIndex = 0;
+
+    public GameObject WarningIcon;
+
+    public bool hasATreasueBeenTaken = false;
+
+    public ParticleSystem Alertparticle;
+
+    public void Start()
+    {
+        this.WarningIcon.gameObject.SetActive(false);
+        this.Alertparticle.gameObject.SetActive(false);
+    }
 
     public override void EndTurn()
     {
@@ -156,5 +170,21 @@ public class KingController : BaseController
             this.SpendActionPoints(skill.ActionPointCost);
             skill.Execute();
         }
+    }
+
+    public void DisplayStartOfRoundInformation()
+    {
+        if (!this.hasATreasueBeenTaken)
+            return;
+
+        Alertparticle.gameObject.SetActive(false);
+        Alertparticle.gameObject.SetActive(true);
+
+        this.hasATreasueBeenTaken = false;
+        this.WarningIcon.gameObject.SetActive(true);
+        this.WarningIcon.transform.DOScale(1, .5f).OnComplete(() =>
+                                                              {
+                                                                  this.WarningIcon.transform.DOScale(.2f, 0.5f).SetDelay(.5f);
+                                                              });
     }
 }

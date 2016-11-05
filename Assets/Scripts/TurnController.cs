@@ -59,6 +59,7 @@ public class TurnController : MonoBehaviour
     {
         this.BlackOverlay.SetActive(false);
         this.StartTurnButton.gameObject.SetActive(false);
+        this.KingController.DisplayStartOfRoundInformation();
     }
 
     public void EndCurrentTurn()
