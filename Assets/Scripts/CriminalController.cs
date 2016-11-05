@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using Assets.Scripts;
 
 using DG.Tweening;
@@ -14,17 +15,19 @@ public class CriminalController : BaseController
 
     public Moba_Camera mobaCam;
 
-    private Point currentMoveEndPoint;
-
-    private int currentMoveActionCost;
-
-    private Vector3[] currentMoveWaypoints;
-
     public int Treasures = 0;
 
     public Text TreasureText;
 
     public GuardController[] Guards;
+
+    public Transform CriminalPivot;
+
+    private Point currentMoveEndPoint;
+
+    private int currentMoveActionCost;
+
+    private Vector3[] currentMoveWaypoints;
 
     public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
@@ -32,8 +35,9 @@ public class CriminalController : BaseController
         this.currentMoveActionCost = actionPointCost;
         this.currentMoveWaypoints = waypoints;
 
-        this.Criminal.transform.DORotate(new Vector3(-10, 0, 0), 0.2f);
-        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
+        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f);
+        this.CriminalPivot.transform.DOPunchRotation(new Vector3(-20, 0, 0), waypoints.Length * 0.2f, 2, 0.5f);
+
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
@@ -41,9 +45,9 @@ public class CriminalController : BaseController
     public void OnDrawGizmosSelected()
     {
         Gizmos.DrawLine(this.CurrentPosition, this.Guards[0].CurrentPosition);
-        var points = LineToGrid(this.CurrentPosition, this.Guards[0].CurrentPosition);
+        List<Point> points = this.LineToGrid(this.CurrentPosition, this.Guards[0].CurrentPosition);
 
-        foreach (var point in points)
+        foreach (Point point in points)
         {
             Gizmos.DrawCube(point, new Vector3(1, 1, 1));
         }
@@ -52,11 +56,6 @@ public class CriminalController : BaseController
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
-
-        this.Criminal.transform.DOPunchRotation(new Vector3(10f, 0, 0), 0.2f, 10, 1f).OnComplete(() =>
-        {
-            this.Criminal.transform.DORotate(Vector3.zero, .2f);
-        });
     }
 
     public void Update()
@@ -100,21 +99,10 @@ public class CriminalController : BaseController
         return TileType.Thief;
     }
 
-    private void GiveTreasure()
-    {
-        this.Treasures++;
-        this.TreasureText.text = this.Treasures.ToString();
-
-        if (this.Treasures >= Bootstrap.TreasureWin)
-        {
-            this.HasWon = true;
-        }
-    }
-
     public override void ProcessAdjacentTile(Point position, Tile tile)
     {
         Point positionCopyIntoClosure = position;
-        var tileCopyIntoClosure = tile;
+        Tile tileCopyIntoClosure = tile;
         switch (tile.Type)
         {
             case TileType.Wall:
@@ -126,38 +114,38 @@ public class CriminalController : BaseController
 
                 if (tileCopyIntoClosure.WasDoor)
                 {
-                    SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
-                    {
-                        tileCopyIntoClosure.Type = TileType.Door;
-                        tileCopyIntoClosure.HP = 1;
-                    }, "Close Door (" + tileCopyIntoClosure.HP + ")");
+                    this.SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                                                                                          {
+                                                                                              tileCopyIntoClosure.Type = TileType.Door;
+                                                                                              tileCopyIntoClosure.HP = 1;
+                                                                                          }, "Close Door (" + tileCopyIntoClosure.HP + ")");
                 }
                 break;
             case TileType.Door:
-                SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
-                {
-                    tileCopyIntoClosure.Type = TileType.Walkable;
-                    tileCopyIntoClosure.HP = 1;
-                }, "Open Door (" + tileCopyIntoClosure.HP + ")");
+                this.SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                                                                                      {
+                                                                                          tileCopyIntoClosure.Type = TileType.Walkable;
+                                                                                          tileCopyIntoClosure.HP = 1;
+                                                                                      }, "Open Door (" + tileCopyIntoClosure.HP + ")");
                 break;
             case TileType.BedHead:
             case TileType.BedFoot:
             case TileType.Cupboard:
                 if (tileCopyIntoClosure.HP > 0 || tileCopyIntoClosure.HasTreasure)
                 {
-                    SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
-                    {
-                        if (tileCopyIntoClosure.HasTreasure)
-                        {
-                            tileCopyIntoClosure.SetTreasure(false);
-                            this.GiveTreasure();
-                            Debug.Log("You got " + this.Treasures + " Treasures.");
-                        }
-                        else
-                        {
-                            Debug.Log("Nothing found!");
-                        }
-                    }, "Search (" + tileCopyIntoClosure.HP + ")");
+                    this.SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                                                                                          {
+                                                                                              if (tileCopyIntoClosure.HasTreasure)
+                                                                                              {
+                                                                                                  tileCopyIntoClosure.SetTreasure(false);
+                                                                                                  this.GiveTreasure();
+                                                                                                  Debug.Log("You got " + this.Treasures + " Treasures.");
+                                                                                              }
+                                                                                              else
+                                                                                              {
+                                                                                                  Debug.Log("Nothing found!");
+                                                                                              }
+                                                                                          }, "Search (" + tileCopyIntoClosure.HP + ")");
                 }
                 break;
         }
@@ -167,12 +155,23 @@ public class CriminalController : BaseController
     {
         base.Awake();
 
-        var spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleThiefSpawns);
+        Point spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleThiefSpawns);
         this.CurrentPosition = spawn;
         Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Thief;
         this.CheckAdjacentTiles();
 
-        ForceCurrentPosition();
+        this.ForceCurrentPosition();
+    }
+
+    private void GiveTreasure()
+    {
+        this.Treasures++;
+        this.TreasureText.text = this.Treasures.ToString();
+
+        if (this.Treasures >= Bootstrap.TreasureWin)
+        {
+            this.HasWon = true;
+        }
     }
 
     private void ExecuteSkill(int id)
