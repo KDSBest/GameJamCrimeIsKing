@@ -58,7 +58,10 @@ public class GuardController : BaseController
         this.currentMoveWaypoints = waypoints;
 
         this.hasArrived = false;
-        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f);
+        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f).OnComplete(() =>
+                                                                                                                                                         {
+                                                                                                                                                             this.GuardPivot.transform.DOPunchRotation(new Vector3(20, 0, 0), .5f, 20, .5f);
+                                                                                                                                                         });
         this.GuardPivot.transform.DOPunchRotation(new Vector3(-20, 0, 0), waypoints.Length * 0.2f, 2, 0.5f);
 
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f + 0.5f);
@@ -111,6 +114,7 @@ public class GuardController : BaseController
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
+
         this.hasArrived = true;
     }
 

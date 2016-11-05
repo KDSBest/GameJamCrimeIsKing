@@ -56,6 +56,8 @@ public class CriminalController : BaseController
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
+
+        this.CriminalPivot.transform.DOPunchRotation(new Vector3(20, 0, 0), .5f, 20, .5f);
     }
 
     public void Update()
