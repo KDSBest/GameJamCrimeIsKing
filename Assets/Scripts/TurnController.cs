@@ -22,6 +22,10 @@ public class TurnController : MonoBehaviour
 
     public Button WonButton;
 
+    public Image KingUi;
+
+    public Image CriminalUi;
+
     public enum Turn
     {
         King,
@@ -48,7 +52,6 @@ public class TurnController : MonoBehaviour
         });
 
         this.BlackOverlay.SetActive(true);
-        this.SetText();
         this.CriminalController.StartTurn();
     }
 
@@ -57,11 +60,10 @@ public class TurnController : MonoBehaviour
         this.BlackOverlay.SetActive(false);
         this.StartTurnButton.gameObject.SetActive(false);
     }
-    
+
     public void EndCurrentTurn()
     {
         this.CurrenTurn = this.CurrenTurn == Turn.King ? Turn.Criminal : Turn.King;
-        this.SetText();
         this.BlackOverlay.SetActive(true);
         this.StartTurnButton.gameObject.SetActive(true);
 
@@ -69,10 +71,14 @@ public class TurnController : MonoBehaviour
         {
             case Turn.King:
                 this.CriminalController.EndTurn();
+                this.KingUi.gameObject.SetActive(true);
+                this.CriminalUi.gameObject.SetActive(false);
                 this.KingController.StartTurn();
                 break;
             case Turn.Criminal:
                 this.KingController.EndTurn();
+                this.KingUi.gameObject.SetActive(false);
+                this.CriminalUi.gameObject.SetActive(true);
                 this.CriminalController.StartTurn();
                 break;
         }
@@ -94,10 +100,5 @@ public class TurnController : MonoBehaviour
             this.WonText.text = "King Wins!";
             this.WonButton.gameObject.SetActive(true);
         }
-    }
-
-    private void SetText()
-    {
-        this.CurrentTurnDisplayText.text = this.CurrenTurn.ToString();
     }
 }

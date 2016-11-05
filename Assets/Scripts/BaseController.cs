@@ -34,6 +34,7 @@ public abstract class BaseController : MonoBehaviour, IController
     public SelectionGrid SelectionGrid;
 
     public bool canMove = true;
+
     public GameObject Button;
 
     public GameObject ButtonParent;
@@ -62,7 +63,7 @@ public abstract class BaseController : MonoBehaviour, IController
         }
     }
 
-    protected void SpawnButton(bool IsFreeAction, Point position, Tile tile, UnityAction buttonAction, string text)
+    protected void SpawnButton(bool IsFreeAction, Point position, Tile tile, UnityAction buttonAction, string text, int cost)
     {
         this.actionButtons.Add(GameObject.Instantiate(this.Button));
         this.actionButtonsPositions.Add(position);
@@ -84,14 +85,16 @@ public abstract class BaseController : MonoBehaviour, IController
             }
             this.UpdateUIElements();
         }));
-        button.GetComponentInChildren<Text>().text = text;
+        var texts = button.GetComponentsInChildren<Text>();
+        texts[0].text = text;
+        texts[1].text = "(" + cost + ")";
     }
 
     public void UpdateButtonPositions()
     {
         for (int i = 0; i < this.actionButtonsPositions.Count; i++)
         {
-            this.actionButtons[i].transform.position = Camera.main.WorldToScreenPoint(new Vector3(this.actionButtonsPositions[i].X, -1.5f, this.actionButtonsPositions[i].Y));
+            ((RectTransform)this.actionButtons[i].transform).anchoredPosition = Camera.main.WorldToScreenPoint(new Vector3(this.actionButtonsPositions[i].X, -1.5f, this.actionButtonsPositions[i].Y));
         }
     }
 
