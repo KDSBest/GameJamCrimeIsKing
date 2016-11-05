@@ -153,7 +153,7 @@ public abstract class BaseController : MonoBehaviour, IController
         this.SetActionPointsText();
     }
 
-    public void SpendActionPoints(int amount)
+    public virtual void SpendActionPoints(int amount)
     {
         this.CurrentActionPoints -= amount;
         this.CurrentActionPoints = Mathf.Clamp(this.CurrentActionPoints, 0, this.ActionPointsMax);
@@ -301,7 +301,7 @@ public abstract class BaseController : MonoBehaviour, IController
         this.actionButtons.Clear();
     }
 
-    private void SetActionPointsText()
+    protected void SetActionPointsText()
     {
         if (this.ActionPointCounter != null)
         {

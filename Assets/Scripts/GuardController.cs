@@ -12,8 +12,6 @@ public class GuardController : BaseController
 
     public bool IsSelected = false;
 
-    public int ActionPointsLastFrame;
-
     public bool hasArrived;
 
     private Point currentMoveEndPoint;
@@ -28,12 +26,19 @@ public class GuardController : BaseController
     {
         base.StartTurn();
 
-        this.ActionPointsLastFrame = this.CurrentActionPoints;
+        this.KingController.UpdateActionPointsFromGuard();
     }
 
     public override TileType GetIgnoreType()
     {
         return TileType.Guard;
+    }
+
+    public override void SpendActionPoints(int amount)
+    {
+        base.SpendActionPoints(amount);
+
+        this.KingController.UpdateActionPointsFromGuard();
     }
 
     public void Awake()
@@ -136,12 +141,6 @@ public class GuardController : BaseController
         if (this.IsSelected)
         {
             this.SelectionGrid.Select(this);
-            if (this.ActionPointsLastFrame != this.CurrentActionPoints)
-            {
-                this.KingController.SpendActionPoints(this.CurrentActionPoints - this.ActionPointsLastFrame);
-            }
         }
-
-        this.ActionPointsLastFrame = this.CurrentActionPoints;
     }
 }

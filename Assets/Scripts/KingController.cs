@@ -45,6 +45,12 @@ public class KingController : BaseController
         this.mobaCam.settings.cameraLocked = true;
     }
 
+    public void UpdateActionPointsFromGuard()
+    {
+        this.CurrentActionPoints = this.Guards.Sum(x => x.CurrentActionPoints);
+        this.SetActionPointsText();
+    }
+
     public override TileType GetIgnoreType()
     {
         return TileType.Guard;
