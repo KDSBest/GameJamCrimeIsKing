@@ -10,11 +10,20 @@ namespace Assets.Scripts
 {
     public class Grid
     {
+
+        private List<TileType> NoVisionBlockers = new List<TileType>()
+                                                  {
+                                                      TileType.Wall,
+                                                      TileType.Door,
+                                                      TileType.DoorFrame
+                                                  };
         public Tile[,] Tiles;
 
         public Point Size;
 
-        public List<Tile> PossibleTreasureTiles = new List<Tile>(); 
+        public List<Tile> PossibleTreasureTiles = new List<Tile>();
+        public List<Point> PossibleThiefSpawns = new List<Point>();
+        public List<Point> PossibleGuardSpawns = new List<Point>();
 
         private const char FloorChar = ' ';
         private const char WallChar = '#';
@@ -27,9 +36,18 @@ namespace Assets.Scripts
         private const char CupboardChar = 'S';
         private const char WalkableDirectionChar = '~';
 
-        private const int CupboardHP = 20;
+        private const int CupboardHP = 15;
 
-        public Grid(string mapFileContent)
+        private GameObject GetVisionBlocker(GameObject visionBlocker, GameObject parent, int x, int y)
+        {
+            GameObject go = GameObject.Instantiate(visionBlocker);
+            go.transform.position = new Vector3(x, 0, y);
+            go.transform.SetParent(parent.transform);
+
+            return go;
+        }
+
+        public Grid(string mapFileContent, GameObject visionBlocker, GameObject parent)
         {
             int mapX = mapFileContent.IndexOfAny(new char[]
                                       {
@@ -48,7 +66,7 @@ namespace Assets.Scripts
             {
                 for (int x = 0; x < mapX; x++)
                 {
-                    this.Tiles[x, y] = new Tile(TileType.Walkable, null);
+                    this.Tiles[x, y] = new Tile(TileType.Walkable, null, GetVisionBlocker(visionBlocker, parent, x, y));
 
                     switch (onlyWithAllowedChars[x + y * mapX])
                     {
@@ -70,10 +88,12 @@ namespace Assets.Scripts
                             this.Tiles[x, y].WasDoor = true;
                             break;
                         case ThiefChar:
-                            this.Tiles[x, y].Type = TileType.Thief;
+                            this.Tiles[x, y].Type = TileType.Walkable;
+                            this.PossibleThiefSpawns.Add(new Point(x, y));
                             break;
                         case GuardChar:
-                            this.Tiles[x, y].Type = TileType.Guard;
+                            this.Tiles[x, y].Type = TileType.Walkable;
+                            this.PossibleGuardSpawns.Add(new Point(x, y));
                             break;
                         case CupboardChar:
                             this.Tiles[x, y].Type = TileType.Cupboard;
@@ -84,32 +104,23 @@ namespace Assets.Scripts
                             this.Tiles[x, y].IsDirectionTile = true;
                             break;
                     }
+
+                    if (this.NoVisionBlockers.Contains(this.Tiles[x, y].Type))
+                        RemoveVisionBlocker(y, x);
                 }
             }
         }
 
-        public Grid(Point size)
+        private void RemoveVisionBlocker(int y, int x)
         {
-            this.Size = size;
-            this.Tiles = new Tile[this.Size.X, this.Size.Y];
-            for (int x = 0; x < this.Size.X; x++)
-            {
-                for (int y = 0; y < this.Size.Y; y++)
-                {
-                    this.Tiles[x, y] = new Tile(TileType.Walkable, null);
-                }
-            }
+            GameObject.Destroy(this.Tiles[x, y].VisionBlocker);
+            this.Tiles[x, y].VisionBlocker = null;
         }
 
         public Grid(Point size, Tile[,] tiles)
         {
             this.Size = size;
             this.Tiles = tiles;
-        }
-
-        public void SetTile(TileType type, int x, int y, GameObject occupyingObject)
-        {
-            this.Tiles[x, y] = new Tile(type, occupyingObject);
         }
 
         public void GeneratedMapVisibles(GameObject parent, GameObject floor, GameObject wall, GameObject wallL, GameObject wallT, GameObject wallX, GameObject bed, GameObject door, GameObject cupboard)
@@ -127,10 +138,11 @@ namespace Assets.Scripts
             {
                 for (int y = 0; y < this.Size.Y; y++)
                 {
+                    ProcessWalkable(floor, x, y);
+
                     switch (this.Tiles[x, y].Type)
                     {
                         case TileType.Walkable:
-                            ProcessWalkable(floor, x, y);
                             break;
                         case TileType.BedHead:
                             this.ProcessBedHead(bed, x, y);
@@ -195,7 +207,7 @@ namespace Assets.Scripts
             {
                 for (int ii = 0; ii < tiles.Length; ii++)
                 {
-                    if(i == ii)
+                    if (i == ii)
                         continue;
 
                     tiles[i].LinkedTiles.Add(tiles[ii]);

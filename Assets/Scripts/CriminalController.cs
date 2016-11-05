@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Assets.Scripts;
 
 using DG.Tweening;
@@ -23,6 +24,8 @@ public class CriminalController : BaseController
 
     public Text TreasureText;
 
+    public GuardController[] Guards;
+
     public override void MoveTo(Point currentPosition, int actionPointCost, Vector3[] waypoints)
     {
         this.currentMoveEndPoint = currentPosition;
@@ -33,6 +36,17 @@ public class CriminalController : BaseController
         this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawLine(this.CurrentPosition, this.Guards[0].CurrentPosition);
+        var points = LineToGrid(this.CurrentPosition, this.Guards[0].CurrentPosition);
+
+        foreach (var point in points)
+        {
+            Gizmos.DrawCube(point, new Vector3(1, 1, 1));
+        }
     }
 
     public void UpdateWalkableTiles()
@@ -72,34 +86,6 @@ public class CriminalController : BaseController
         }
     }
 
-    protected override void CheckAdjacentTiles()
-    {
-        base.CheckAdjacentTiles();
-        var positionToCheck = this.CurrentPosition + new Point(1, 0);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-
-        positionToCheck = this.CurrentPosition + new Point(-1, 0);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-
-        positionToCheck = this.CurrentPosition + new Point(0, 1);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-
-        positionToCheck = this.CurrentPosition + new Point(0, -1);
-        if (this.IsValidTilePosition(positionToCheck.X, positionToCheck.Y))
-        {
-            ProcessAdjacentTile(positionToCheck, Bootstrap.Instance.Map.Tiles[positionToCheck.X, positionToCheck.Y]);
-        }
-    }
-
     public override void StartTurn()
     {
         base.StartTurn();
@@ -109,7 +95,7 @@ public class CriminalController : BaseController
         this.CheckAdjacentTiles();
     }
 
-    protected override TileType GetIgnoreType()
+    public override TileType GetIgnoreType()
     {
         return TileType.Thief;
     }
@@ -125,7 +111,7 @@ public class CriminalController : BaseController
         }
     }
 
-    public void ProcessAdjacentTile(Point position, Tile tile)
+    public override void ProcessAdjacentTile(Point position, Tile tile)
     {
         Point positionCopyIntoClosure = position;
         var tileCopyIntoClosure = tile;
@@ -140,7 +126,7 @@ public class CriminalController : BaseController
 
                 if (tileCopyIntoClosure.WasDoor)
                 {
-                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                     {
                         tileCopyIntoClosure.Type = TileType.Door;
                         tileCopyIntoClosure.HP = 1;
@@ -148,7 +134,7 @@ public class CriminalController : BaseController
                 }
                 break;
             case TileType.Door:
-                SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                 {
                     tileCopyIntoClosure.Type = TileType.Walkable;
                     tileCopyIntoClosure.HP = 1;
@@ -159,7 +145,7 @@ public class CriminalController : BaseController
             case TileType.Cupboard:
                 if (tileCopyIntoClosure.HP > 0 || tileCopyIntoClosure.HasTreasure)
                 {
-                    SpawnButton(positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>
                     {
                         if (tileCopyIntoClosure.HasTreasure)
                         {
@@ -180,20 +166,13 @@ public class CriminalController : BaseController
     public void Awake()
     {
         base.Awake();
-        Bootstrap.Instance.Map.Traverse((x, y, tile) =>
-        {
-            if (tile.Type == TileType.Thief)
-            {
-                this.CurrentPosition = new Point(x, y);
-                this.CheckAdjacentTiles();
-                return false;
-            }
 
-            return true;
-        });
+        var spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleThiefSpawns);
+        this.CurrentPosition = spawn;
+        Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Thief;
+        this.CheckAdjacentTiles();
 
         ForceCurrentPosition();
-
     }
 
     private void ExecuteSkill(int id)

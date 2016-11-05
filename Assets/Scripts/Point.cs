@@ -54,5 +54,10 @@ namespace Assets.Scripts
         {
             return new Vector2(p.X, p.Y);
         }
+
+        public static implicit operator Vector3(Point p)
+        {
+            return new Vector3(p.X, 0, p.Y);
+        }
     }
 }

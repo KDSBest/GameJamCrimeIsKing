@@ -150,6 +150,7 @@ namespace Assets.Scripts
                         this.CurrentPosition = this.SelectedPoint;
                         baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
                         this.DeleteAllWaypoints();
+                        this.CalculatePossibleTurns(baseController.CurrentPosition, baseController.CurrentActionPoints, baseController.GetIgnoreType(), baseController.Index);
                     }
                 }
             }
@@ -159,6 +160,7 @@ namespace Assets.Scripts
         {
             GameObject go = GameObject.Instantiate(toClone);
             go.transform.position = new Vector3(point.X, 0.05f, point.Y);
+            go.transform.SetParent(this.transform);
             this.WaypointsAllowed.Add(go);
         }
 
@@ -174,6 +176,7 @@ namespace Assets.Scripts
         {
             GameObject go = GameObject.Instantiate(toClone);
             go.transform.position = new Vector3(point.X, 0.5f, point.Y);
+            go.transform.SetParent(this.transform);
             this.Waypoints.Add(go);
         }
 

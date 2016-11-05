@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Assets.Scripts;
+
 using UnityEngine;
 
 public class KingController : BaseController
@@ -15,7 +17,15 @@ public class KingController : BaseController
 
     private int currentGuardIndex = 0;
 
+    public override void EndTurn()
+    {
+        base.EndTurn();
 
+        foreach (GuardController guardController in this.Guards)
+        {
+            guardController.EndTurn();
+        }
+    }
 
     public override void StartTurn()
     {
@@ -35,9 +45,14 @@ public class KingController : BaseController
         this.mobaCam.settings.cameraLocked = true;
     }
 
-    protected override TileType GetIgnoreType()
+    public override TileType GetIgnoreType()
     {
         return TileType.Guard;
+    }
+
+    public override void ProcessAdjacentTile(Point position, Tile tile)
+    {
+        
     }
 
     public void Update()
@@ -46,6 +61,8 @@ public class KingController : BaseController
         {
             return;
         }
+
+        this.HasWon = this.Guards.Any(x => x.HasWon);
 
         var orderedGuards = this.Guards.Where(x => x.CurrentActionPoints > 0).OrderBy(x => x.name).ToList();
 

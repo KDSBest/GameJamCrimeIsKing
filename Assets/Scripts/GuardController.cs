@@ -29,7 +29,7 @@ public class GuardController : BaseController
         this.ActionPointsLastFrame = this.CurrentActionPoints;
     }
 
-    protected override TileType GetIgnoreType()
+    public override TileType GetIgnoreType()
     {
         return TileType.Guard;
     }
@@ -37,22 +37,15 @@ public class GuardController : BaseController
     public void Awake()
     {
         base.Awake();
-        int index = 0;
-        Bootstrap.Instance.Map.Traverse((x, y, tile) =>
-        {
-            if (tile.Type == TileType.Guard)
-            {
-                if (index == this.Index)
-                {
-                    this.CurrentPosition = new Point(x, y);
-                    this.CheckAdjacentTiles();
-                    return false;
-                }
-                index++;
-            }
 
-            return true;
-        });
+
+        var spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleGuardSpawns);
+
+        Debug.Log("Guard: " + spawn.X + " " + spawn.Y);
+        this.CurrentPosition = spawn;
+        Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Guard;
+        Bootstrap.Instance.Map.PossibleGuardSpawns.Remove(spawn);
+        this.CheckAdjacentTiles();
 
         ForceCurrentPosition();
     }
@@ -66,7 +59,48 @@ public class GuardController : BaseController
         this.hasArrived = false;
         this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f + 0.5f);
-        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
+        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Guard;
+        Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].GuardIndex = this.Index;
+    }
+
+    public override void ProcessAdjacentTile(Point position, Tile tile)
+    {
+        Point positionCopyIntoClosure = position;
+        var tileCopyIntoClosure = tile;
+        switch (tile.Type)
+        {
+            case TileType.Wall:
+            case TileType.DoorFrame:
+            case TileType.BedHead:
+            case TileType.BedFoot:
+            case TileType.Cupboard:
+            case TileType.Guard:
+                break;
+            case TileType.Walkable:
+
+                if (tileCopyIntoClosure.WasDoor)
+                {
+                    SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                    {
+                        tileCopyIntoClosure.Type = TileType.Door;
+                        tileCopyIntoClosure.HP = 1;
+                    }, "Close Door");
+                }
+                break;
+            case TileType.Door:
+                SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                {
+                    tileCopyIntoClosure.Type = TileType.Walkable;
+                    tileCopyIntoClosure.HP = 1;
+                }, "Open Door");
+                break;
+            case TileType.Thief:
+                SpawnButton(true, positionCopyIntoClosure, tileCopyIntoClosure, () =>
+                {
+                    this.HasWon = true;
+                }, "Catch");
+                break;
+        }
     }
 
     public void UpdateWalkableTiles()
@@ -74,7 +108,6 @@ public class GuardController : BaseController
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
         this.hasArrived = true;
     }
-
 
     public void ContinueTurn()
     {
