@@ -33,7 +33,7 @@ public abstract class BaseController : MonoBehaviour, IController
 
     public SelectionGrid SelectionGrid;
 
-    public bool canMove = true;
+    public bool CanMove = true;
 
     public GameObject Button;
 
@@ -124,7 +124,7 @@ public abstract class BaseController : MonoBehaviour, IController
 
         this.SetActionPointsText();
 
-        if (this.canMove)
+        if (this.CanMove)
         {
             this.UpdateUIElements();
         }
@@ -168,6 +168,8 @@ public abstract class BaseController : MonoBehaviour, IController
 
         if (this.HasTurnToken)
             this.UpdateUIElements();
+
+        this.CanMove = true;
     }
 
     public List<Point> LineToGrid(Point p0, Point p1)
@@ -220,7 +222,7 @@ public abstract class BaseController : MonoBehaviour, IController
 
     protected void UpdateVision()
     {
-        if (!this.HasTurnToken || !this.canMove)
+        if (!this.HasTurnToken || !this.CanMove)
             return;
 
         DoVision(this.CurrentPosition);

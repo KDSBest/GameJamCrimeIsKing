@@ -59,7 +59,8 @@ public class CriminalController : BaseController
             return;
         }
 
-        this.SelectionGrid.Select(this);
+        if (this.CanMove)
+            this.SelectionGrid.Select(this);
 
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {

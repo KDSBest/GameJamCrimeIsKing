@@ -130,7 +130,7 @@ public class GuardController : BaseController
 
     public void ContinueTurn()
     {
-        if (this.canMove && this.IsSelected)
+        if (this.CanMove && this.IsSelected)
         {
             this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
         }
@@ -138,7 +138,7 @@ public class GuardController : BaseController
 
     public void UpdateController()
     {
-        if (this.IsSelected)
+        if (this.IsSelected && this.CanMove)
         {
             this.SelectionGrid.Select(this);
         }
