@@ -33,15 +33,37 @@ namespace Assets.Scripts
 
         public GameObject FloorGrid;
 
-        public GameObject Cupboard;
+        public GameObject LockerHigh;
 
         public GameObject VisionBlocker;
+
+        public GameObject CouchTable;
+
+        public GameObject Chair;
+
+        public GameObject Couch;
+
+        public GameObject Crate;
+
+        public GameObject Crate1;
+
+        public GameObject Crate2;
+
+        public GameObject Desk;
+
+        public GameObject Cupboard;
+
+        public GameObject Seat;
+
+        public GameObject Tresor;
+
+        public GameObject Vase;
 
         public const int TreasureCount = 10;
 
         public const int TreasureWin = 4;
 
-        public const int WeightCupboard = 10;
+        public const int WeightLockerHigh = 10;
 
         public const int WeightBed = 1;
 
@@ -54,7 +76,7 @@ namespace Assets.Scripts
                 case TileType.BedHead:
                     return WeightBed;
                 case TileType.Cupboard:
-                    return WeightCupboard;
+                    return WeightLockerHigh;
                 default:
                     return WeightOther;
             }
@@ -81,7 +103,7 @@ namespace Assets.Scripts
                 }
             }
 
-            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, Cupboard);
+            this.Map.GeneratedMapVisibles(Parent, this.Floor, this.Wall, this.WallL, this.WallT, this.WallX, Bed, Door, this.LockerHigh, this.Couch, this.CouchTable, this.Chair, this.Crate, this.Crate1, this.Crate2, this.Desk, this.Cupboard, this.Seat, this.Tresor, this.Vase);
 
             FloorGrid.transform.localScale = new Vector3(this.Map.Size.X, 1, this.Map.Size.Y);
             this.FloorGrid.transform.position = new Vector3(this.Map.Size.X / 2, 0, this.Map.Size.Y / 2);
