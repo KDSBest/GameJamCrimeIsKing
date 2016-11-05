@@ -221,7 +221,7 @@ public abstract class BaseController : MonoBehaviour, IController
 
         this.ShowDeactivatedVisionBlockers();
 
-        for (int i = 0; i < 360; i++)
+        for (float i = 0; i < 360; i+=0.5f)
         {
             Vector3 dir = Vector3.up;
             dir = Quaternion.AngleAxis(i, Vector3.forward) * dir;

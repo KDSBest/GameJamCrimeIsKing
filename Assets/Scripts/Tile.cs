@@ -10,6 +10,8 @@ namespace Assets.Scripts
 
         public GameObject OccupyingObject;
 
+        public GameObject FloorObject;
+
         public GameObject VisionBlocker;
 
         public bool IsDirectionTile = false;

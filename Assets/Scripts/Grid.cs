@@ -136,10 +136,11 @@ namespace Assets.Scripts
             {
                 for (int y = 0; y < this.Size.Y; y++)
                 {
+                    ProcessWalkable(floor, x, y);
+
                     switch (this.Tiles[x, y].Type)
                     {
                         case TileType.Walkable:
-                            ProcessWalkable(floor, x, y);
                             break;
                         case TileType.BedHead:
                             this.ProcessBedHead(bed, x, y);

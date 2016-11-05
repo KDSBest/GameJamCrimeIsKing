@@ -39,7 +39,7 @@ namespace Assets.Scripts
 
         public const int TreasureCount = 10;
 
-        public const int TreasureWin = 3;
+        public const int TreasureWin = 4;
 
         public const int WeightCupboard = 10;
 
