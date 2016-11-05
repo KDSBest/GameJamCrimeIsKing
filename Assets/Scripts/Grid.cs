@@ -532,7 +532,7 @@ namespace Assets.Scripts
                                         new Point(x, y - 1),
                                         new Point(x, y + 1)
                                     },
-                    Rotation = tildeRight ? 0 : 180
+                    Rotation = tildeRight ? 180 : 0
                 };
 
             return new Placement3LineResult()
@@ -542,7 +542,7 @@ namespace Assets.Scripts
                                         new Point(x - 1, y),
                                         new Point(x + 1, y)
                                 },
-                Rotation = tildeDown ? 90 : -90
+                Rotation = tildeDown ? -90 : 90
             };
         }
 
