@@ -13,7 +13,7 @@ public abstract class BaseController : MonoBehaviour, IController
 
     protected List<TileType> Blocking = new List<TileType>()
                                       {
-        TileType.Wall, TileType.Door, TileType.DoorFrame
+        TileType.Wall, TileType.Door, TileType.DoorFrame, TileType.Cupboard
                                       };
 
     public int CurrentActionPoints;
