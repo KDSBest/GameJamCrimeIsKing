@@ -68,7 +68,8 @@ public class GuardController : BaseController
                                                                                                                                                              this.GuardPivot.transform.DOPunchRotation(new Vector3(20, 0, 0), .5f, 20, .5f);
                                                                                                                                                          }).OnWaypointChange((wp) =>
                                                                                                                                                          {
-                                                                                                                                                             var curPos = new Point((int)waypoints[wp].x, (int)waypoints[wp].z);
+                                                                                                                                                             var curPos = new Point((int)Mathf.Round(waypoints[wp].x), (int)Mathf.Round(waypoints[wp].z));
+                                                                                                                                                             Debug.Log(curPos);
                                                                                                                                                              this.SelectionGrid.CalculatePossibleTurns(curPos, this.CurrentActionPoints - wp - 1, this.GetIgnoreType(), this.Index);
                                                                                                                                                              this.DoVision(curPos);
                                                                                                                                                          });
@@ -124,7 +125,6 @@ public class GuardController : BaseController
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
-
         this.hasArrived = true;
     }
 
