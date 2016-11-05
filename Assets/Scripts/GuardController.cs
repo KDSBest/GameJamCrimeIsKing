@@ -22,6 +22,8 @@ public class GuardController : BaseController
 
     private Vector3[] currentMoveWaypoints;
 
+    public Transform GuardPivot;
+
     public override void StartTurn()
     {
         base.StartTurn();
@@ -37,7 +39,6 @@ public class GuardController : BaseController
     public void Awake()
     {
         base.Awake();
-
 
         var spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleGuardSpawns);
 
@@ -57,7 +58,9 @@ public class GuardController : BaseController
         this.currentMoveWaypoints = waypoints;
 
         this.hasArrived = false;
-        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.1f);
+        this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f);
+        this.GuardPivot.transform.DOPunchRotation(new Vector3(-20, 0, 0), waypoints.Length * 0.2f, 2, 0.5f);
+
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f + 0.5f);
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Guard;
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].GuardIndex = this.Index;
