@@ -35,7 +35,12 @@ public class CriminalController : BaseController
         this.currentMoveActionCost = actionPointCost;
         this.currentMoveWaypoints = waypoints;
 
-        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f);
+        this.Criminal.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f).OnWaypointChange((wp) =>
+        {
+            var curPos = new Point((int)waypoints[wp].x, (int)waypoints[wp].z);
+            this.SelectionGrid.CalculatePossibleTurns(curPos, this.CurrentActionPoints - wp - 1, this.GetIgnoreType(), this.Index);
+            this.DoVision(curPos);
+        });
         this.CriminalPivot.transform.DOPunchRotation(new Vector3(-20, 0, 0), waypoints.Length * 0.2f, 2, 0.5f);
 
         this.Invoke("UpdateWalkableTiles", waypoints.Length * 0.2f);

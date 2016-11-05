@@ -61,6 +61,11 @@ public class GuardController : BaseController
         this.Guard.transform.DOPath(waypoints, waypoints.Length * 0.2f, PathType.CatmullRom, PathMode.Full3D, 5, Color.cyan).SetLookAt(0.01f).OnComplete(() =>
                                                                                                                                                          {
                                                                                                                                                              this.GuardPivot.transform.DOPunchRotation(new Vector3(20, 0, 0), .5f, 20, .5f);
+                                                                                                                                                         }).OnWaypointChange((wp) =>
+                                                                                                                                                         {
+                                                                                                                                                             var curPos = new Point((int)waypoints[wp].x, (int)waypoints[wp].z);
+                                                                                                                                                             this.SelectionGrid.CalculatePossibleTurns(curPos, this.CurrentActionPoints - wp - 1, this.GetIgnoreType(), this.Index);
+                                                                                                                                                             this.DoVision(curPos);
                                                                                                                                                          });
         this.GuardPivot.transform.DOPunchRotation(new Vector3(-20, 0, 0), waypoints.Length * 0.2f, 2, 0.5f);
 
