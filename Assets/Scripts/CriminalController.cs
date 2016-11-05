@@ -19,8 +19,6 @@ public class CriminalController : BaseController
 
     public Text TreasureText;
 
-    public GuardController[] Guards;
-
     public Transform CriminalPivot;
 
     private Point currentMoveEndPoint;
@@ -47,17 +45,6 @@ public class CriminalController : BaseController
         Bootstrap.Instance.Map.Tiles[this.currentMoveEndPoint.X, this.currentMoveEndPoint.Y].Type = TileType.Thief;
     }
 
-    public void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawLine(this.CurrentPosition, this.Guards[0].CurrentPosition);
-        List<Point> points = this.LineToGrid(this.CurrentPosition, this.Guards[0].CurrentPosition);
-
-        foreach (Point point in points)
-        {
-            Gizmos.DrawCube(point, new Vector3(1, 1, 1));
-        }
-    }
-
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
@@ -72,7 +59,8 @@ public class CriminalController : BaseController
             return;
         }
 
-        this.SelectionGrid.Select(this);
+        if (this.CanMove)
+            this.SelectionGrid.Select(this);
 
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {

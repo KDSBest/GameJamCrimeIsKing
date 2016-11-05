@@ -66,7 +66,7 @@ public class Moba_Camera_Requirements
 public class Moba_Camera_KeyCodes
 {
     // Allows camera to be rotated while pressed
-    public KeyCode RotateCamera = KeyCode.Mouse1;
+    public KeyCode RotateCamera = KeyCode.Mouse2;
 
     // Toggle lock camera to lockTargetTransform position
     public KeyCode LockCamera = KeyCode.L;
@@ -349,6 +349,10 @@ public class Moba_Camera : MonoBehaviour
                 zoomChange = mouseScrollWheel;
             }
         }
+
+        this.requirements.camera.orthographicSize -= zoomChange;
+        this.requirements.camera.orthographicSize = Mathf.Clamp(this.requirements.camera.orthographicSize, this.settings.zoom.minZoom, this.settings.zoom.maxZoom);
+
 
         // change the zoom amount based on if zoom is inverted
         if (!settings.zoom.invertZoom) inverted = -1;

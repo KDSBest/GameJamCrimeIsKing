@@ -12,8 +12,6 @@ public class GuardController : BaseController
 
     public bool IsSelected = false;
 
-    public int ActionPointsLastFrame;
-
     public bool hasArrived;
 
     private Point currentMoveEndPoint;
@@ -28,12 +26,19 @@ public class GuardController : BaseController
     {
         base.StartTurn();
 
-        this.ActionPointsLastFrame = this.CurrentActionPoints;
+        this.KingController.UpdateActionPointsFromGuard();
     }
 
     public override TileType GetIgnoreType()
     {
         return TileType.Guard;
+    }
+
+    public override void SpendActionPoints(int amount)
+    {
+        base.SpendActionPoints(amount);
+
+        this.KingController.UpdateActionPointsFromGuard();
     }
 
     public void Awake()
@@ -63,7 +68,8 @@ public class GuardController : BaseController
                                                                                                                                                              this.GuardPivot.transform.DOPunchRotation(new Vector3(20, 0, 0), .5f, 20, .5f);
                                                                                                                                                          }).OnWaypointChange((wp) =>
                                                                                                                                                          {
-                                                                                                                                                             var curPos = new Point((int)waypoints[wp].x, (int)waypoints[wp].z);
+                                                                                                                                                             var curPos = new Point((int)Mathf.Round(waypoints[wp].x), (int)Mathf.Round(waypoints[wp].z));
+                                                                                                                                                             Debug.Log(curPos);
                                                                                                                                                              this.SelectionGrid.CalculatePossibleTurns(curPos, this.CurrentActionPoints - wp - 1, this.GetIgnoreType(), this.Index);
                                                                                                                                                              this.DoVision(curPos);
                                                                                                                                                          });
@@ -119,13 +125,12 @@ public class GuardController : BaseController
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
-
         this.hasArrived = true;
     }
 
     public void ContinueTurn()
     {
-        if (this.canMove && this.IsSelected)
+        if (this.CanMove && this.IsSelected)
         {
             this.SelectionGrid.CalculatePossibleTurns(this.CurrentPosition, this.CurrentActionPoints, this.GetIgnoreType(), this.Index);
         }
@@ -133,15 +138,9 @@ public class GuardController : BaseController
 
     public void UpdateController()
     {
-        if (this.IsSelected)
+        if (this.IsSelected && this.CanMove)
         {
             this.SelectionGrid.Select(this);
-            if (this.ActionPointsLastFrame != this.CurrentActionPoints)
-            {
-                this.KingController.SpendActionPoints(this.CurrentActionPoints - this.ActionPointsLastFrame);
-            }
         }
-
-        this.ActionPointsLastFrame = this.CurrentActionPoints;
     }
 }

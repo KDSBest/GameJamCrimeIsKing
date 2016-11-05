@@ -155,6 +155,7 @@ namespace Assets.Scripts
                     }
                     else if(this.SelectedPoint.X != this.CurrentPosition.X || this.SelectedPoint.Y != this.CurrentPosition.Y)
                     {
+                        baseController.CanMove = false;
                         this.CurrentPosition = this.SelectedPoint;
                         baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
                         this.DeleteAllWaypoints();

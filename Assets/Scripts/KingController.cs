@@ -32,7 +32,7 @@ public class KingController : BaseController
         base.StartTurn();
 
         this.currentGuardIndex = 0;
-        this.canMove = false;
+        this.CanMove = false;
         this.Guards = this.Guards.OrderBy(x => x.gameObject.name).ToList();
         foreach (GuardController guardController in this.Guards)
         {
@@ -45,6 +45,12 @@ public class KingController : BaseController
         this.mobaCam.settings.cameraLocked = true;
     }
 
+    public void UpdateActionPointsFromGuard()
+    {
+        this.CurrentActionPoints = this.Guards.Sum(x => x.CurrentActionPoints);
+        this.SetActionPointsText();
+    }
+
     public override TileType GetIgnoreType()
     {
         return TileType.Guard;
@@ -52,7 +58,7 @@ public class KingController : BaseController
 
     public override void ProcessAdjacentTile(Point position, Tile tile)
     {
-        
+
     }
 
     public void Update()
@@ -80,19 +86,11 @@ public class KingController : BaseController
         {
             if (Input.GetKeyUp(KeyCode.A))
             {
-                currentGuardIndex++;
-                this.currentGuardIndex = currentGuardIndex % orderedGuards.Count;
-                var guard = orderedGuards[this.currentGuardIndex];
-                this.SelectGuard(guard);
+                SelectPrevious();
             }
             else if (Input.GetKeyUp(KeyCode.D))
             {
-                currentGuardIndex--;
-                if (this.currentGuardIndex < 0)
-                    this.currentGuardIndex = orderedGuards.Count - 1;
-                var guard = orderedGuards[this.currentGuardIndex];
-
-                this.SelectGuard(guard);
+                SelectNext();
             }
         }
 
@@ -112,6 +110,28 @@ public class KingController : BaseController
         {
             this.ExecuteSkill(3);
         }
+    }
+
+    public void SelectPrevious()
+    {
+        var orderedGuards = this.Guards.OrderBy(x => x.name).ToList();
+
+        currentGuardIndex++;
+        this.currentGuardIndex = currentGuardIndex % orderedGuards.Count;
+        var guard = orderedGuards[this.currentGuardIndex];
+        this.SelectGuard(guard);
+    }
+
+    public void SelectNext()
+    {
+        var orderedGuards = this.Guards.OrderBy(x => x.name).ToList();
+
+        currentGuardIndex--;
+        if (this.currentGuardIndex < 0)
+            this.currentGuardIndex = orderedGuards.Count - 1;
+        var guard = orderedGuards[this.currentGuardIndex];
+
+        this.SelectGuard(guard);
     }
 
     private void SelectGuard(GuardController guardController)
