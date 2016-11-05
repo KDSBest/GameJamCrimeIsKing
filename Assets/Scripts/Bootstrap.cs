@@ -59,23 +59,22 @@ namespace Assets.Scripts
 
         public GameObject Vase;
 
-        public const int TreasureCount = 10;
+        public const int TreasureCount = 20;
 
         public const int TreasureWin = 4;
 
         public const int WeightLockerHigh = 10;
 
-        public const int WeightBed = 1;
-
-        public const int WeightOther = 0;
+        public const int WeightOther = 1;
 
         private int GetWeight(TileType type)
         {
             switch (type)
             {
-                case TileType.BedHead:
-                    return WeightBed;
                 case TileType.Cupboard:
+                case TileType.Tresor:
+                case TileType.LockerHigh:
+                case TileType.Crate:
                     return WeightLockerHigh;
                 default:
                     return WeightOther;

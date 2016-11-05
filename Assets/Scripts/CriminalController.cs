@@ -133,6 +133,14 @@ public class CriminalController : BaseController
             case TileType.BedHead:
             case TileType.BedFoot:
             case TileType.Cupboard:
+            case TileType.Tresor:
+            case TileType.LockerHigh:
+            case TileType.Crate:
+            case TileType.Crate1:
+            case TileType.Crate2:
+            case TileType.Couch:
+            case TileType.Vase:
+            case TileType.Seat:
                 if (tileCopyIntoClosure.HP > 0 || tileCopyIntoClosure.HasTreasure)
                 {
                     this.SpawnButton(false, positionCopyIntoClosure, tileCopyIntoClosure, () =>

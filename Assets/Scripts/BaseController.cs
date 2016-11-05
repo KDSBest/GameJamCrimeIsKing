@@ -13,7 +13,8 @@ public abstract class BaseController : MonoBehaviour, IController
 
     protected List<TileType> Blocking = new List<TileType>()
                                       {
-        TileType.Wall, TileType.Door, TileType.DoorFrame, TileType.Cupboard
+        TileType.Wall, TileType.Door, TileType.DoorFrame, TileType.Cupboard,
+        TileType.LockerHigh
                                       };
 
     public int CurrentActionPoints;
@@ -45,7 +46,7 @@ public abstract class BaseController : MonoBehaviour, IController
     private List<GameObject> actionButtons = new List<GameObject>();
     private List<Point> actionButtonsPositions = new List<Point>();
 
-    private List<GameObject> visionBlockersDeactivated = new List<GameObject>(); 
+    private List<GameObject> visionBlockersDeactivated = new List<GameObject>();
 
     protected void TryToKillTile(Tile tile)
     {
@@ -221,7 +222,7 @@ public abstract class BaseController : MonoBehaviour, IController
 
         this.ShowDeactivatedVisionBlockers();
 
-        for (float i = 0; i < 360; i+=0.5f)
+        for (float i = 0; i < 360; i += 0.5f)
         {
             Vector3 dir = Vector3.up;
             dir = Quaternion.AngleAxis(i, Vector3.forward) * dir;
