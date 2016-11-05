@@ -1,21 +1,15 @@
 fileFormatVersion: 2
-guid: afc6b29e8584455418e1db87ff4642cd
-timeCreated: 1478273217
+guid: 9ed1f5421643e27439c2db0c59efe702
+timeCreated: 1478350297
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: figure
-    100002: //RootNode
-    400000: figure
-    400002: //RootNode
-    2300000: figure
-    2300002: //RootNode
-    3300000: figure
-    3300002: //RootNode
-    4300000: fig_base
-    4300002: figure
-    4300004: player_thief
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: tresor
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -38,7 +32,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -57,8 +51,8 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 0
-    normalImportMode: 1
+    normalSmoothAngle: 60
+    normalImportMode: 0
     tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0

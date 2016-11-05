@@ -38,22 +38,14 @@ public class GuardController : BaseController
     {
         base.Awake();
 
-        int index = 0;
-        Bootstrap.Instance.Map.Traverse((x, y, tile) =>
-        {
-            if (tile.Type == TileType.Guard)
-            {
-                if (index == this.Index)
-                {
-                    this.CurrentPosition = new Point(x, y);
-                    this.CheckAdjacentTiles();
-                    return false;
-                }
-                index++;
-            }
 
-            return true;
-        });
+        var spawn = RandomHelper.RandomSelect(Bootstrap.Instance.Map.PossibleGuardSpawns);
+
+        Debug.Log("Guard: " + spawn.X + " " + spawn.Y);
+        this.CurrentPosition = spawn;
+        Bootstrap.Instance.Map.Tiles[spawn.X, spawn.Y].Type = TileType.Guard;
+        Bootstrap.Instance.Map.PossibleGuardSpawns.Remove(spawn);
+        this.CheckAdjacentTiles();
 
         ForceCurrentPosition();
     }
