@@ -114,9 +114,6 @@ namespace Assets.Scripts
 
                     switch (c)
                     {
-                        case BedHeadChar:
-                            this.PossibleTreasureTiles.Add(this.Tiles[x, y]);
-                            break;
                         case DoorChar:
                             this.Tiles[x, y].WasDoor = true;
                             break;
@@ -126,7 +123,17 @@ namespace Assets.Scripts
                         case GuardChar:
                             this.PossibleGuardSpawns.Add(new Point(x, y));
                             break;
+                        case BedHeadChar:
                         case LockerHighChar:
+                        case CupboardChar:
+                        case TresorChar:
+                        case CouchChar:
+                        case CouchTableChar:
+                        case CrateChar:
+                        case Crate1Char:
+                        case Crate2Char:
+                        case VaseChar:
+                        case SeatChar:
                             this.PossibleTreasureTiles.Add(this.Tiles[x, y]);
                             break;
                         case WalkableDirectionChar:
@@ -193,25 +200,25 @@ namespace Assets.Scripts
                             this.ProcessOrientedTilde(lockerHigh, x, y, LockerHighHp);
                             break;
                         case TileType.Crate:
-                            this.ProcessOrientedTilde(crate, x, y);
+                            this.ProcessOrientedTilde(crate, x, y, LockerHighHp / 2);
                             break;
                         case TileType.Crate1:
-                            this.ProcessOrientationless(crate1, x, y);
+                            this.ProcessOrientationless(crate1, x, y, LockerHighHp / 2);
                             break;
                         case TileType.Crate2:
-                            this.ProcessOrientationless(crate2, x, y);
+                            this.ProcessOrientationless(crate2, x, y, LockerHighHp / 2);
                             break;
                         case TileType.Desk:
                             this.ProcessLine2Object(desk, x, y, TileType.DeskNeighbour);
                             break;
                         case TileType.Cupboard:
-                            this.ProcessOrientedTilde(cupboard, x, y);
+                            this.ProcessOrientedTilde(cupboard, x, y, LockerHighHp / 4);
                             break;
                         case TileType.Seat:
                             this.ProcessOrientedTilde(seat, x, y);
                             break;
                         case TileType.Tresor:
-                            this.ProcessOrientedTilde(tresor, x, y);
+                            this.ProcessOrientedTilde(tresor, x, y, LockerHighHp);
                             break;
                         case TileType.Vase:
                             this.ProcessOrientationless(vase, x, y);
