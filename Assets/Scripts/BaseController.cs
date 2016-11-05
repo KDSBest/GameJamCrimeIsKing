@@ -91,7 +91,7 @@ public abstract class BaseController : MonoBehaviour, IController
     {
         for (int i = 0; i < this.actionButtonsPositions.Count; i++)
         {
-            this.actionButtons[i].transform.position = Camera.main.WorldToScreenPoint(new Vector3(this.actionButtonsPositions[i].X, -3, this.actionButtonsPositions[i].Y));
+            this.actionButtons[i].transform.position = Camera.main.WorldToScreenPoint(new Vector3(this.actionButtonsPositions[i].X, -1.5f, this.actionButtonsPositions[i].Y));
         }
     }
 
