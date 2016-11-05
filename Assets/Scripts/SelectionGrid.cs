@@ -35,7 +35,7 @@ namespace Assets.Scripts
         public void CalculatePossibleTurns(Point currentPosition, int actionPoints, TileType ignoreType, int ignoreGuardIndex)
         {
             this.CurrentPosition = currentPosition;
-            Debug.Log("Calc Turns " + this.CurrentPosition.X + ", " + this.CurrentPosition.Y + " - " + actionPoints);
+            //Debug.Log("Calc Turns " + this.CurrentPosition.X + ", " + this.CurrentPosition.Y + " - " + actionPoints);
 
             if (actionPoints == 0)
             {
@@ -153,7 +153,7 @@ namespace Assets.Scripts
                             }
                         }
                     }
-                    else if(this.SelectedPoint.X != this.CurrentPosition.X || this.SelectedPoint.Y != this.CurrentPosition.Y)
+                    else if (this.SelectedPoint.X != this.CurrentPosition.X || this.SelectedPoint.Y != this.CurrentPosition.Y)
                     {
                         baseController.CanMove = false;
                         this.CurrentPosition = this.SelectedPoint;

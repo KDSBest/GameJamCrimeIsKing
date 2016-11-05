@@ -73,7 +73,7 @@ public class CriminalController : BaseController
             return;
         }
 
-        if (this.CanMove)
+        if (this.CanMove && this.CurrentActionPoints > 0)
         {
             this.SelectionGrid.Select(this);
         }

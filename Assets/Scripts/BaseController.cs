@@ -307,7 +307,7 @@ public abstract class BaseController : MonoBehaviour, IController
     {
         if (this.ActionPointCounter != null)
         {
-            this.ActionPointCounter.text = this.CurrentActionPoints.ToString();
+            this.ActionPointCounter.text = this.CurrentActionPoints + " / " + this.ActionPointsMax;
         }
     }
 
