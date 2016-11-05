@@ -69,7 +69,6 @@ public class GuardController : BaseController
                                                                                                                                                          }).OnWaypointChange((wp) =>
                                                                                                                                                          {
                                                                                                                                                              var curPos = new Point((int)Mathf.Round(waypoints[wp].x), (int)Mathf.Round(waypoints[wp].z));
-                                                                                                                                                             Debug.Log(curPos);
                                                                                                                                                              this.SelectionGrid.CalculatePossibleTurns(curPos, this.CurrentActionPoints - wp - 1, this.GetIgnoreType(), this.Index);
                                                                                                                                                              this.DoVision(curPos);
                                                                                                                                                          });
@@ -125,6 +124,7 @@ public class GuardController : BaseController
     public void UpdateWalkableTiles()
     {
         base.MoveTo(this.currentMoveEndPoint, this.currentMoveActionCost, this.currentMoveWaypoints);
+        DoVision(this.currentMoveEndPoint);
         this.hasArrived = true;
     }
 
