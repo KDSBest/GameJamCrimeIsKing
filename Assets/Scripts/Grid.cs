@@ -23,6 +23,7 @@ namespace Assets.Scripts
 
         public List<Tile> PossibleTreasureTiles = new List<Tile>();
         public List<Point> PossibleThiefSpawns = new List<Point>();
+        public List<Point> PossibleGuardSpawns = new List<Point>();
 
         private const char FloorChar = ' ';
         private const char WallChar = '#';
@@ -91,7 +92,8 @@ namespace Assets.Scripts
                             this.PossibleThiefSpawns.Add(new Point(x, y));
                             break;
                         case GuardChar:
-                            this.Tiles[x, y].Type = TileType.Guard;
+                            this.Tiles[x, y].Type = TileType.Walkable;
+                            this.PossibleGuardSpawns.Add(new Point(x, y));
                             break;
                         case CupboardChar:
                             this.Tiles[x, y].Type = TileType.Cupboard;
