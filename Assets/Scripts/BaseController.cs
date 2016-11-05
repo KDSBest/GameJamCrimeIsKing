@@ -223,13 +223,18 @@ public abstract class BaseController : MonoBehaviour, IController
         if (!this.HasTurnToken || !this.canMove)
             return;
 
+        DoVision(this.CurrentPosition);
+    }
+
+    protected void DoVision(Point currentPosition)
+    {
         this.ShowDeactivatedVisionBlockers();
 
         for (float i = 0; i < 360; i += 0.5f)
         {
             Vector3 dir = Vector3.up;
             dir = Quaternion.AngleAxis(i, Vector3.forward) * dir;
-            var points = LineToGrid(this.CurrentPosition, this.CurrentPosition + new Point((int)Mathf.Round(dir.x * this.Vision), (int)Mathf.Round(dir.y * this.Vision)));
+            var points = LineToGrid(currentPosition, currentPosition + new Point((int)Mathf.Round(dir.x * this.Vision), (int)Mathf.Round(dir.y * this.Vision)));
 
             foreach (Point point in points)
             {
