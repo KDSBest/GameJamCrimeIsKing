@@ -36,6 +36,13 @@ namespace Assets.Scripts
         {
             this.CurrentPosition = currentPosition;
             Debug.Log("Calc Turns " + this.CurrentPosition.X + ", " + this.CurrentPosition.Y + " - " + actionPoints);
+
+            if (actionPoints == 0)
+            {
+                this.DeleteAllWaypointsAllowed();
+                return;
+            }
+
             AllowedMovesOffest = new Point(int.MaxValue, int.MaxValue);
             Point high = new Point(int.MinValue, int.MinValue);
 
@@ -86,6 +93,7 @@ namespace Assets.Scripts
             }
 
             this.DeleteAllWaypointsAllowed();
+
             Grid g = new Grid(AllowedMovesSize, tiles);
 
             Point startPosition = new Point(this.CurrentPosition.X - AllowedMovesOffest.X, this.CurrentPosition.Y - AllowedMovesOffest.Y);
@@ -145,7 +153,7 @@ namespace Assets.Scripts
                             }
                         }
                     }
-                    else
+                    else if(this.SelectedPoint.X != this.CurrentPosition.X || this.SelectedPoint.Y != this.CurrentPosition.Y)
                     {
                         this.CurrentPosition = this.SelectedPoint;
                         baseController.MoveTo(this.CurrentPosition, this.AllowedMoves[offsetClick.X, offsetClick.Y], this.Waypoints.Select(x => x.transform.position).Reverse().ToArray());
