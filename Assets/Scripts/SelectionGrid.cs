@@ -101,7 +101,7 @@ namespace Assets.Scripts
 
             foreach (var fieldEntry in field)
             {
-                if (fieldEntry.Cost <= actionPoints && (this.CurrentPosition.X != fieldEntry.Position.X || this.CurrentPosition.Y != fieldEntry.Position.Y))
+                if (fieldEntry.Cost <= actionPoints && (this.CurrentPosition.X != fieldEntry.Position.X + this.AllowedMovesOffest.X || this.CurrentPosition.Y != fieldEntry.Position.Y + this.AllowedMovesOffest.Y))
                 {
                     Point endPositionInMap = fieldEntry.Position + this.AllowedMovesOffest;
                     CreateWaypointAllowed(this.WaypointAllowed, endPositionInMap);
