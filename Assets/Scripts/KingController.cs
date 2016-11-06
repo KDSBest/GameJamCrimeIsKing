@@ -54,6 +54,9 @@ public class KingController : BaseController
             guardController.hasArrived = false;
             guardController.StartTurn();
         }
+        this.ActionPointsMax = this.Guards.Sum(x => x.ActionPointsMax);
+        this.UpdateActionPointsFromGuard();
+
         this.SelectGuard(this.Guards[this.currentGuardIndex]);
         this.mobaCam.settings.lockTargetTransform = this.Guards[this.currentGuardIndex].transform;
         this.mobaCam.settings.cameraLocked = true;
