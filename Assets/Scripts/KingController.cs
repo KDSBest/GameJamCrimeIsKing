@@ -187,7 +187,7 @@ public class KingController : BaseController
         this.WarningIcon.gameObject.SetActive(true);
         this.WarningIcon.transform.DOScale(1, .5f).OnComplete(() =>
                                                               {
-                                                                  this.WarningIcon.transform.DOScale(.2f, 0.5f).SetDelay(.5f);
+                                                                  this.WarningIcon.transform.DOScale(.4f, 0.5f).SetDelay(.5f);
                                                               });
     }
 }
