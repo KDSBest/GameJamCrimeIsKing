@@ -1,0 +1,67 @@
+Initialize engine version: 5.3.4f1 (fdbb5133b820)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: Intel(R) HD Graphics 4600 (ID=0x416)
+    Vendor:   Intel
+    VRAM:     1136 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween43.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween43.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween46.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween46.dll into Unity Child Domain
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween50.dll (this message is harmless)
+Loading C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\DOTween50.dll into Unity Child Domain
+- Completed reload, in  0.046 seconds
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Kevin\Desktop\Apppfiff\GameJamCIK\GameJamCrimeIsKing\Vault Buster_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 5760x1200 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.677400 ms
+X Count: 90
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Y Count: 32
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 4160 -> priority: 1 
+  Thread -> id: 5174 -> priority: 1 
+UnloadTime: 2.892881 ms
+Guard: 52 17
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Guard: 7 14
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Guard: 43 3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+
+Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 14112.
+Total: 3.084591 ms (FindLiveObjects: 0.532609 ms CreateObjectMapping: 0.185112 ms MarkObjects: 2.348175 ms  DeleteObjects: 0.017961 ms)
+
+start turn: CriminalController
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
